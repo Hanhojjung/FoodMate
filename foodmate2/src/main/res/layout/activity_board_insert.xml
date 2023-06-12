@@ -76,9 +76,10 @@
                     android:layout_marginLeft="0dp"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:text="내용"/>
+                    android:text="일정을 잡아주세요"/>
 
                 <Button
+                    android:backgroundTint="@color/orange"
                     android:id="@+id/btn_calendar"
                     android:layout_marginLeft="30dp"
                     android:layout_width="80dp"
@@ -122,6 +123,7 @@
             android:id="@+id/reg_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:backgroundTint="@color/orange"
             android:padding="8dp"
             android:layout_marginLeft="150dp"
             android:text="등록하기"/>
