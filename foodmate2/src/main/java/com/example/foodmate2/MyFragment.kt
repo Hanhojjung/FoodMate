@@ -89,6 +89,7 @@ class MyFragment : Fragment() {
         return inSampleSize
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
