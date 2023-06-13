@@ -9,8 +9,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodMate">
         <activity
-            android:name=".BoardDelete"
+            android:name=".MyBoardList"
             android:exported="false" />
+        <activity
+            android:name=".BoardDelete"
+            android:exported="true" />
         <activity
             android:name=".BoardUpdate"
             android:exported="true" />
