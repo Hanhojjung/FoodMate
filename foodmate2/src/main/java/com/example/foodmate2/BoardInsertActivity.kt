@@ -3,16 +3,18 @@ package com.example.foodmate2
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
-
+import androidx.appcompat.widget.Toolbar
 import java.text.DateFormat
-import java.util.*
+import java.util.Calendar
 
 class BoardInsertActivity : AppCompatActivity() {
 
@@ -26,6 +28,22 @@ class BoardInsertActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_board_insert)
+        val regButton: Button = findViewById(R.id.reg_button)
+        val regCancel: Button = findViewById(R.id.reg_cancel)
+
+        regButton.setOnClickListener {
+            // 등록하기 버튼 클릭 시 처리할 로직 작성
+            // 예: BoardList로 이동
+            val intent = Intent(this@BoardInsertActivity, BoardDetail::class.java)
+            startActivity(intent)
+        }
+
+        regCancel.setOnClickListener {
+            // 작성 취소 버튼 클릭 시 처리할 로직 작성
+            // 예: 메인화면 으로 이동
+            val intent = Intent(this@BoardInsertActivity, MainActivity::class.java)
+            startActivity(intent)
+        }
 
         txtAppointment = findViewById(R.id.appointment)
         btnCalendar = findViewById(R.id.btn_calendar)
@@ -36,9 +54,13 @@ class BoardInsertActivity : AppCompatActivity() {
 
         btnCalendar.setOnClickListener {
             showDatePicker()
+
         }
     }
 
+
+
+    // 날짜 선택
     private fun showDatePicker() {
         val datePickerDialog = DatePickerDialog(this,
             DatePickerDialog.OnDateSetListener { view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int ->
@@ -54,6 +76,7 @@ class BoardInsertActivity : AppCompatActivity() {
         datePickerDialog.show()
     }
 
+    // 시간 선택
     private fun showTimePicker() {
         val timePickerDialog = TimePickerDialog(this,
             TimePickerDialog.OnTimeSetListener { view: TimePicker?, hourOfDay: Int, minute: Int ->

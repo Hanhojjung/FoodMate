@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.d(TAG, "개발새발(https://jeong9216.tistory.com/) 블로그 좋아요!");
 
+
         init(); // 객체 정의
         SettingListener(); // 리스너 등록
 
@@ -35,7 +39,18 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar); // 툴바 정의
         setSupportActionBar(toolbar);
+
+        // 플러스 버튼 클릭시 팝업 메뉴
+        ImageButton plusButton = findViewById(R.id.plus);
+        plusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopupMenu(plusButton);
+            }
+        });
+
     }
+
 
     // 메뉴 리소스 XML의 내용을 앱바(App Bar)에 반영
     @Override
@@ -61,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     private void init() {
@@ -104,5 +118,34 @@ public class MainActivity extends AppCompatActivity {
 
             return false;
         }
+    }
+
+
+    private void showPopupMenu(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        popupMenu.inflate(R.menu.board_menu);
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.writing) {
+                    // 모집글 작성 메뉴 클릭 시 처리할 로직 작성
+                    // 예: BoardInsertActivity로 이동
+                    Intent intent = new Intent(MainActivity.this, BoardInsertActivity.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.mywriteview) {
+                    // 내가 작성한 글 보기 메뉴 클릭 시 처리할 로직 작성
+                    // 예: MyWritePage로 이동
+                    Intent intent = new Intent(MainActivity.this, MyWritePage.class);
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        popupMenu.show();
     }
 }

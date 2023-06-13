@@ -8,11 +8,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodMate">
-
+        <activity
+            android:name=".BoardDelete"
+            android:exported="false" />
+        <activity
+            android:name=".BoardUpdate"
+            android:exported="true" />
+        <activity
+            android:name=".BoardDetail"
+            android:exported="true" />
+        <activity
+            android:name=".MyWritePage"
+            android:exported="true" />
         <activity
             android:name=".BoardInsertActivity"
             android:exported="true" />
-
         <activity
             android:name=".MainActivity3"
             android:exported="true" />

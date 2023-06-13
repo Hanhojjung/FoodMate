@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="16dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="제목"/>
+
+    <TextView
+        android:id="@+id/title_tv"
+        android:padding="16dp"
+        android:background="#eeeeee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="제목입니다."
+        />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="작성일"/>
+
+        <TextView
+            android:id="@+id/date_tv"
+            android:padding="16dp"
+            android:background="#eeeeee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="작성일"
+            />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="닉네임"/>
+
+        <TextView
+            android:id="@+id/nickname"
+            android:padding="16dp"
+            android:background="#eeeeee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="닉네임"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textSize="12dp"
+            android:text="약속 일정"/>
+
+        <TextView
+            android:id="@+id/appointment"
+            android:layout_marginLeft="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:text="일정 확인"/>
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_marginLeft="0dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textSize="12dp"
+            android:text="식당 이름" />
+
+        <TextView
+            android:id="@+id/restaurant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="0dp"
+            android:padding="16dp"
+            android:text="식당 이름"/>
+
+
+    </LinearLayout>
+
+
+
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="내용"/>
+
+    <TextView
+        android:id="@+id/content_tv"
+        android:padding="16dp"
+        android:background="#eeeeee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="내용입니다."
+        />
+
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/reg_update"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/orange"
+            android:padding="8dp"
+            android:layout_marginLeft="30dp"
+            android:text="수정"/>
+
+        <Button
+            android:id="@+id/reg_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/orange"
+            android:padding="8dp"
+            android:layout_marginLeft="20dp"
+            android:text="목록"/>
+
+        <Button
+            android:id="@+id/reg_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/orange"
+            android:padding="8dp"
+            android:layout_marginLeft="20dp"
+            android:text="삭제"/>
+    </LinearLayout>
+
+
+</LinearLayout>
+

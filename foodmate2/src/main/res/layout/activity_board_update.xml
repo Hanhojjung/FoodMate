@@ -145,21 +145,21 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/reg_button"
+            android:id="@+id/reg_update"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:backgroundTint="@color/orange"
             android:padding="8dp"
             android:layout_marginLeft="90dp"
-            android:text="등록하기"/>
+            android:text="수정 완료"/>
 
         <Button
-            android:id="@+id/reg_cancel"
+            android:id="@+id/reg_update_cancel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:backgroundTint="@color/orange"
             android:padding="8dp"
             android:layout_marginLeft="20dp"
-            android:text="작성취소"/>
+            android:text="수정 취소"/>
     </LinearLayout>
 </LinearLayout>
