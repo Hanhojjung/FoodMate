@@ -47,4 +47,13 @@ interface ApiService  {
         @Header("Cookie") sessionId: String
     ): Call<String>
 
+    // 게시글 작성
+    @POST("test/insertBoard/{point}")
+    fun insertBoard(
+        @Path("point") point: String,
+        @Query("nickname") id: String,
+        @Query("pw") pw: String,
+        @Query("nickname") nickname: String
+    ): Call<ResponseBody>
+
 }

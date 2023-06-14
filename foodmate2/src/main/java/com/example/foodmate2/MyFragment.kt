@@ -23,6 +23,7 @@ class MyFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         _binding = FragmentMyBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -94,4 +95,6 @@ class MyFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }
