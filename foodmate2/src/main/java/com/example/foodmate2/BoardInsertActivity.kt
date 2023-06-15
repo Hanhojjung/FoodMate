@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
@@ -13,10 +14,26 @@ import android.widget.TextView
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.example.foodmate2.controller.controller.ApiService
+import com.example.foodmate2.controller.controller.Board
+import com.example.foodmate2.controller.controller.RetrofitBuilder
+import com.example.foodmate2.databinding.ActivityBoardInsertBinding
+import com.example.foodmate2.databinding.ActivityMain2Binding
+import com.example.foodmate2.databinding.ActivityMain3Binding
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.DateFormat
 import java.util.Calendar
 
 class BoardInsertActivity : AppCompatActivity() {
+
+    private lateinit var board: Board
+    private val TAG: String = "BoardInsertActivity"
+    private lateinit var binding: ActivityBoardInsertBinding
+    private lateinit var apiService: ApiService
+
 
     private lateinit var txtAppointment: TextView
     private lateinit var btnCalendar: Button
@@ -27,26 +44,41 @@ class BoardInsertActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_board_insert)
-        val regButton: Button = findViewById(R.id.reg_button)
-        val regCancel: Button = findViewById(R.id.reg_cancel)
+//        setContentView(R.layout.activity_board_insert)
+        binding = ActivityBoardInsertBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        regButton.setOnClickListener {
-            // 등록하기 버튼 클릭 시 처리할 로직 작성
-            // 예: BoardList로 이동
+        apiService = RetrofitBuilder.createApiService()
+
+        // 수정된 부분: findViewById를 제거하고 binding 객체에서 직접 접근
+        binding.regButton.setOnClickListener {
+            val title = binding.titleTv.text.toString()
+            val user_count = binding.partyone.text.toString()
+            val bar_name = binding.restaurant.text.toString()
+            val bar_appoint = binding.appointment.text.toString()
+            val content = binding.contentTv.text.toString()
+
+            insertBoard(title, user_count, bar_name, bar_appoint, content)
+
             val intent = Intent(this@BoardInsertActivity, BoardDetail::class.java)
+            intent.putExtra("title", title)
+            intent.putExtra("user_count", user_count)
+            intent.putExtra("bar_name", bar_name)
+            intent.putExtra("bar_appoint", bar_appoint)
+            intent.putExtra("content", content)
             startActivity(intent)
         }
 
-        regCancel.setOnClickListener {
-            // 작성 취소 버튼 클릭 시 처리할 로직 작성
-            // 예: 메인화면 으로 이동
+        // 수정된 부분: findViewById를 제거하고 binding 객체에서 직접 접근
+        binding.regCancel.setOnClickListener {
             val intent = Intent(this@BoardInsertActivity, MainActivity::class.java)
             startActivity(intent)
         }
 
-        txtAppointment = findViewById(R.id.appointment)
-        btnCalendar = findViewById(R.id.btn_calendar)
+
+        txtAppointment = binding.appointment
+        btnCalendar = binding.btnCalendar
+
 
         calendar = Calendar.getInstance()
         dateFormat = android.text.format.DateFormat.getDateFormat(applicationContext)
@@ -57,7 +89,31 @@ class BoardInsertActivity : AppCompatActivity() {
 
         }
     }
+    private fun insertBoard(title: String, user_count: String, bar_name: String, bar_appoint : String, content : String) {
+        val call: Call<ResponseBody> = apiService.insertBoard("1", title, user_count, bar_name,bar_appoint ,content)
 
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                // 서버 요청 성공 처리
+                Log.d(TAG, "게시판 삽입 성공")
+
+                // BoardDetail로 이동하는 로직 추가
+                val intent = Intent(this@BoardInsertActivity, BoardDetail::class.java)
+                intent.putExtra("title", title)
+                intent.putExtra("user_count", user_count)
+                intent.putExtra("bar_name", bar_name)
+                intent.putExtra("bar_appoint", bar_appoint)
+                intent.putExtra("content", content)
+                startActivity(intent)
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                // 통신 실패 처리
+                Log.e(TAG, "게시판 삽입 실패: ${t.message}")
+
+            }
+        })
+    }
 
 
     // 날짜 선택
@@ -97,3 +153,4 @@ class BoardInsertActivity : AppCompatActivity() {
         timePickerDialog.show()
     }
 }
+

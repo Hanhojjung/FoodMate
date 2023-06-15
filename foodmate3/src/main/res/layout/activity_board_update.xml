@@ -90,13 +90,12 @@
                     android:padding="16dp"
                     android:text="약속 일정"/>
 
-                <EditText
+                <TextView
                     android:id="@+id/appointment"
                     android:layout_width="150dp"
                     android:layout_marginLeft="0dp"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:textSize="14dp"
                     android:text="일정을 잡아주세요"/>
 
                 <Button
@@ -121,13 +120,12 @@
                     android:padding="16dp"
                     android:text="식당 이름" />
 
-                <EditText
+                <TextView
                     android:id="@+id/restaurant"
                     android:layout_width="150dp"
                     android:layout_marginLeft="0dp"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:textSize="14dp"
                     android:text="식당을 정해주세요."/>
 
                 <Button
@@ -165,21 +163,21 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/reg_button"
+            android:id="@+id/reg_update"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:backgroundTint="@color/orange"
             android:padding="8dp"
             android:layout_marginLeft="90dp"
-            android:text="등록하기"/>
+            android:text="수정 완료"/>
 
         <Button
-            android:id="@+id/reg_cancel"
+            android:id="@+id/reg_update_cancel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:backgroundTint="@color/orange"
             android:padding="8dp"
             android:layout_marginLeft="20dp"
-            android:text="작성취소"/>
+            android:text="수정 취소"/>
     </LinearLayout>
 </LinearLayout>

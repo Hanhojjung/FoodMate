@@ -90,13 +90,12 @@
                     android:padding="16dp"
                     android:text="약속 일정"/>
 
-                <EditText
+                <TextView
                     android:id="@+id/appointment"
                     android:layout_width="150dp"
                     android:layout_marginLeft="0dp"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:textSize="14dp"
                     android:text="일정을 잡아주세요"/>
 
                 <Button
@@ -121,13 +120,12 @@
                     android:padding="16dp"
                     android:text="식당 이름" />
 
-                <EditText
+                <TextView
                     android:id="@+id/restaurant"
                     android:layout_width="150dp"
                     android:layout_marginLeft="0dp"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:textSize="14dp"
                     android:text="식당을 정해주세요."/>
 
                 <Button

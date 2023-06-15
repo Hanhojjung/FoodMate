@@ -1,6 +1,7 @@
-package com.example.foodmate2.controller.controller
+package com.example.foodmate3.controller
 
-import com.example.foodmate2.controller.controller.Member
+import com.example.foodmate3.model.LoginResponse
+import com.example.foodmate3.model.MemberDto
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
@@ -10,34 +11,34 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface ApiService {
-    @POST("test/insertMember/{point}")
+interface MemberController {
+
+    @POST("/insertMember")
     fun insertMember(
-        @Path("point") point: String,
         @Query("id") id: String,
         @Query("pw") pw: String,
         @Query("nickname") nickname: String
     ): Call<ResponseBody>
 
-    @GET("/test/getMemberDetail")
-    fun getMemberDetail(@Query("id") id: String): Call<Member>
+    @GET("/getMemberDetail")
+    fun getMemberDetail(@Query("id") id: String): Call<MemberDto>
 
-    @POST("/test/updateMember")
+    @POST("/updateMember")
     fun updateMember(
         @Query("id") id: String,
         @Query("pw") pw: String,
         @Query("nickname") nickname: String
     ): Call<String>
 
-    @GET("/test/deleteMember")
+    @GET("/deleteMember")
     fun deleteMember(@Query("id") id: String): Call<String>
 
-    @POST("test/login")
+    @POST("/login")
     fun login(
-        @Body member: Member
+        @Body member: MemberDto
     ): Call<LoginResponse>
 
-    @POST("/api/logout")
+    @POST("/logout")
     fun logout(
         @Header("Cookie") sessionId: String
     ): Call<String>
@@ -48,16 +49,13 @@ interface ApiService {
     ): Call<String>
 
     // 게시글 작성
-    @POST("test/insertBoard/{point}")
+    @POST("/insertBoard/{point}")
     fun insertBoard(
         @Path("point") point: String,
-        @Query("title") title: String,
-        @Query("user_count") user_count: String,
-        @Query("content") content: String,
-        @Query("bar_name") bar_name: String,
-        @Query("bar_appoint") bar_appoint: String
-        ): Call<ResponseBody>
-
+        @Query("nickname") id: String,
+        @Query("pw") pw: String,
+        @Query("nickname") nickname: String
+    ): Call<ResponseBody>
 
 
 }

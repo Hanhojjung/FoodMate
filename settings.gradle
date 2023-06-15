@@ -16,3 +16,4 @@ rootProject.name = "FoodMate"
 include ':app'
 include ':foodmate'
 include ':foodmate2'
+include ':foodmate3'
