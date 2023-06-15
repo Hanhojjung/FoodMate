@@ -66,7 +66,7 @@
                     android:text="닉네임"/>
 
                 <TextView
-                    android:id="@+id/nickname"
+                    android:id="@+id/nickname_tv"
                     android:padding="16dp"
                     android:background="#eeeeee"
                     android:layout_width="match_parent"
@@ -88,7 +88,7 @@
                     android:text="모집 인원 / 참가 인원"/>
 
                 <TextView
-                    android:id="@+id/partyone"
+                    android:id="@+id/partyone_tv"
                     android:padding="16dp"
                     android:background="#eeeeee"
                     android:textSize="14dp"
@@ -112,7 +112,7 @@
                     android:text="약속 일정"/>
 
                 <TextView
-                    android:id="@+id/appointment"
+                    android:id="@+id/appointment_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="0dp"
@@ -129,7 +129,7 @@
                     android:text="식당 이름" />
 
                 <TextView
-                    android:id="@+id/restaurant"
+                    android:id="@+id/restaurant_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

@@ -30,7 +30,7 @@
                     android:text="제목"/>
 
                 <EditText
-                    android:id="@+id/title_tv"
+                    android:id="@+id/title_et"
                     android:padding="16dp"
                     android:background="#eeeeee"
                     android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                     android:text="작성일"/>
 
                 <TextView
-                    android:id="@+id/date_tv"
+                    android:id="@+id/date_et"
                     android:padding="16dp"
                     android:background="#eeeeee"
                     android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                     android:text="인원수"/>
 
                 <EditText
-                    android:id="@+id/partyone"
+                    android:id="@+id/partyone_et"
                     android:padding="16dp"
                     android:background="#eeeeee"
                     android:textSize="14dp"
@@ -91,7 +91,7 @@
                     android:text="약속 일정"/>
 
                 <TextView
-                    android:id="@+id/appointment"
+                    android:id="@+id/appointment_et"
                     android:layout_width="150dp"
                     android:layout_marginLeft="0dp"
                     android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
                     android:text="식당 이름" />
 
                 <TextView
-                    android:id="@+id/restaurant"
+                    android:id="@+id/restaurant_et"
                     android:layout_width="150dp"
                     android:layout_marginLeft="0dp"
                     android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
                 android:text="내용"/>
 
             <EditText
-                android:id="@+id/content_tv"
+                android:id="@+id/content_et"
                 android:padding="16dp"
                 android:background="#eeeeee"
                 android:layout_width="match_parent"
