@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -66,29 +67,46 @@ class BarListActivity : AppCompatActivity() {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, HomeFragment())
                     .commit()
+
+                // BarListActivity 화면 숨기기
+                binding.recyclerView.visibility = View.GONE
+
                 return true
             } else if (itemId == R.id.tab_chat) {
                 // 채팅 프래그먼트를 표시하도록 변경하거나 필요한 대상 프래그먼트로 수정해주세요
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, ChatFragment())
                     .commit()
+
+                // BarListActivity 화면 숨기기
+                binding.recyclerView.visibility = View.GONE
+
                 return true
             } else if (itemId == R.id.tab_calendar) {
                 // 캘린더 프래그먼트를 표시하도록 변경하거나 필요한 대상 프래그먼트로 수정해주세요
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, CalendarFragment())
                     .commit()
+
+                // BarListActivity 화면 숨기기
+                binding.recyclerView.visibility = View.GONE
+
                 return true
             } else if (itemId == R.id.tab_my) {
                 // 마이 프래그먼트를 표시하도록 변경하거나 필요한 대상 프래그먼트로 수정해주세요
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, MyFragment())
                     .commit()
+
+                // BarListActivity 화면 숨기기
+                binding.recyclerView.visibility = View.GONE
+
                 return true
             }
             return false
         }
     }
+
 
     private fun getFoodList(barService: BarController) {
         val foodListCall: Call<List<BarDto>> = barService.getAllBars()
