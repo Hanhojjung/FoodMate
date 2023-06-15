@@ -19,7 +19,7 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
-    private val TAG: String = "LoginActivity"
+    private val TAG: String = "MainActivity2"
     private lateinit var binding: ActivityLoginBinding
     private lateinit var apiService: MemberController
 
@@ -39,16 +39,14 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             val id = binding.editId.text.toString()
             val pw = binding.editPw.text.toString()
-
+            val nickname = binding.editNickname.text.toString()
 
             if (id.isEmpty() || pw.isEmpty()) {
                 showDialog("blank")
                 return@setOnClickListener
             }
 
-            val member = MemberDto(id, pw, nickname = "")
-            val nickname = member.nickname
-            login(member)
+            login(id, pw, nickname)
         }
 
         val joinButton = binding.btnRegister
@@ -58,32 +56,25 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun login(member: MemberDto) {
+    private fun login(id: String, pw: String, nickname: String) {
+        val member = MemberDto(id, pw, nickname)
         val call = apiService.login(member)
-        Log.d(TAG, "로그인 요청 - ID: ${member.id}, PW: ${member.pw}")
+        Log.d(TAG, "로그인 요청 - ID: $id, PW: $pw")
         call.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
-                    if (loginResponse?.message == "Login successful") {
+                    if (loginResponse != null && loginResponse.status == "success") { // Updated condition
                         // 로그인 성공 처리
                         Log.d(TAG, "로그인 성공")
                         showDialog("success")
 
-                        val sessionId = loginResponse?.sessionId ?: ""
-                        val sessionPw = loginResponse?.sessionPw ?: ""
-                        val nickname = loginResponse?.nickname ?: ""
+                        val sessionId = loginResponse.sessionId
+                        val sessionPw = loginResponse.sessionPw
+                        val sessionNickname = loginResponse.sessionNickname
 
-                        // 세션 ID 저장
-                        SharedPreferencesUtil.saveSessionId(this@LoginActivity, sessionId, sessionPw, nickname)
-                        Log.d(TAG, "Saving session ID: $sessionId, session PW: $sessionPw, nickname: $nickname")
-
-                        // 로그인 상태를 true로 설정합니다.
-                        SharedPreferencesUtil.setLoggedIn(this@LoginActivity, true)
-
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        // 추가: 닉네임 정보를 가져오는 API 호출 및 세션 저장
+                        getNicknameAndSaveSession(sessionId, sessionPw, sessionNickname)
                     } else {
                         // 로그인 실패 처리
                         Log.d(TAG, "로그인 실패")
@@ -106,6 +97,42 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
+    private fun getNicknameAndSaveSession(sessionId: String, sessionPw: String, sessionNickname: String) {
+        // Modify this part to retrieve the nickname using Retrofit and store the session
+        apiService.getMemberDetail(sessionId).enqueue(object : Callback<MemberDto> { // Assuming getMemberDetail API returns Member
+            override fun onResponse(call: Call<MemberDto>, response: Response<MemberDto>) {
+                if (response.isSuccessful) {
+                    // 닉네임 정보 가져오기 성공
+                    val member = response.body()
+
+                    if (member != null) {
+                        val nickname = member.nickname
+
+                        // 세션 저장
+                        SharedPreferencesUtil.saveSession(this@LoginActivity, sessionId, sessionPw, nickname)
+
+                        Log.d(TAG, "Saving session ID: $sessionId, session PW: $sessionPw, nickname: $nickname")
+
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        showDialog("fail")
+                    }
+                } else {
+                    // API 호출 실패 처리
+                    showDialog("fail")
+                }
+            }
+
+            override fun onFailure(call: Call<MemberDto>, t: Throwable) {
+                // 통신 실패 처리
+                showDialog("fail")
+                Log.e(TAG, "통신 실패: ${t.message}")
+            }
+        })
+    }
+
     // 로그인 성공/실패 시 다이얼로그를 띄워주는 메소드
     private fun showDialog(type: String) {
         val dialogBuilder = AlertDialog.Builder(this)
@@ -116,6 +143,9 @@ class LoginActivity : AppCompatActivity() {
         } else if (type == "fail") {
             dialogBuilder.setTitle("로그인 실패")
             dialogBuilder.setMessage("아이디와 비밀번호를 확인해주세요")
+        } else if (type == "blank") {
+            dialogBuilder.setTitle("입력 필요")
+            dialogBuilder.setMessage("아이디와 비밀번호를 입력해주세요")
         }
 
         val dialogListener = DialogInterface.OnClickListener { dialog, which ->
@@ -135,5 +165,4 @@ class LoginActivity : AppCompatActivity() {
         val dialog = dialogBuilder.create() // 다이얼로그 객체 생성
         dialog.show() // 다이얼로그 표시
     }
-
 }

@@ -35,15 +35,20 @@ class MainActivity : AppCompatActivity() {
 
         // 맨 처음 시작할 탭 설정
         binding.bottomNavigationView.selectedItemId = R.id.tab_home
-
         setSupportActionBar(binding.toolbar) // 툴바 설정
 
         // 플러스 버튼 클릭시 팝업 메뉴
         binding.plus.setOnClickListener { showPopupMenu(binding.plus) }
 
-        val isLoggedIn = SharedPreferencesUtil.isLoggedIn(this)
+        val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(this)
         Log.d(TAG, "세션 유지 상태: $isLoggedIn")
 
+        if (!isLoggedIn) {
+            // 사용자가 로그인되어 있지 않으면 MainActivity2(로그인 화면)로 이동합니다.
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     // 메뉴 리소스 XML의 내용을 앱바(App Bar)에 반영
@@ -51,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_toolbar, menu)
 
         // MainActivity의 onCreateOptionsMenu 함수 내에서 호출하여 세션 유지 상태를 확인하는 예시입니다.
-        val isLoggedIn = SharedPreferencesUtil.isLoggedIn(this)
+        val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(this)
         val loginMenuItem = menu.findItem(R.id.login)
         val logoutMenuItem = menu.findItem(R.id.logout)
 
@@ -147,7 +152,8 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this@MainActivity, MyWritePage::class.java)
                 startActivity(intent)
                 return@OnMenuItemClickListener true
-            }else if (itemId == R.id.barlist) {
+            }
+            else if (itemId == R.id.barlist) {
                 // 내가 작성한 글 보기 메뉴 클릭 시 처리할 로직 작성
                 // 예: MyWritePage로 이동
                 val intent = Intent(this@MainActivity, BarListActivity::class.java)

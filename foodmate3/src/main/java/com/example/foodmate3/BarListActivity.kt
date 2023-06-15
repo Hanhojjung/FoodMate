@@ -67,7 +67,7 @@ class BarListActivity : AppCompatActivity() {
         // 플러스 버튼 클릭시 팝업 메뉴
         binding.plus.setOnClickListener { showPopupMenu(binding.plus) }
 
-        val isLoggedIn = SharedPreferencesUtil.isLoggedIn(this)
+        val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(this)
         Log.d(TAG, "세션 유지 상태: $isLoggedIn")
     }
 
@@ -83,7 +83,7 @@ class BarListActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_toolbar, menu)
 
         // MainActivity의 onCreateOptionsMenu 함수 내에서 호출하여 세션 유지 상태를 확인하는 예시입니다.
-        val isLoggedIn = SharedPreferencesUtil.isLoggedIn(this)
+        val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(this)
         val loginMenuItem = menu.findItem(R.id.login)
         val logoutMenuItem = menu.findItem(R.id.logout)
 
