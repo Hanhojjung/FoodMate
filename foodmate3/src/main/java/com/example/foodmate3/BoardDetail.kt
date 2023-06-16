@@ -8,18 +8,20 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.example.foodmate3.controller.SharedPreferencesUtil
 
 
 class BoardDetail : AppCompatActivity() {
     val TAG = this.javaClass.simpleName
+    private lateinit var toolbar: Toolbar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         setContentView(R.layout.activity_board_detail)
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
         val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(this)
         Log.d(TAG, "세션 유지 상태: $isLoggedIn")

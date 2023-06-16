@@ -40,8 +40,6 @@ import java.util.Locale
 class BoardInsert : AppCompatActivity() {
 
     val TAG = this.javaClass.simpleName
-    lateinit var binding: BoardInsert
-
     private lateinit var toolbar: Toolbar
 
     private lateinit var txtAppointment: TextView
@@ -223,6 +221,8 @@ class BoardInsert : AppCompatActivity() {
     }
 
     private fun sendBoardData() {
+        val intent = Intent(this@BoardInsert, BoardDetail::class.java)
+        startActivity(intent)
         val userNicname = SharedPreferencesUtil.getSessionNickname(this@BoardInsert) // 작성자 정보
         val title = findViewById<EditText>(R.id.boardtitle).text.toString()
         val content = findViewById<EditText>(R.id.boardcontent).text.toString()
