@@ -177,50 +177,38 @@ class BoardInsert : AppCompatActivity() {
     }
 
     private fun sendBoardData() {
-        val userNicname = SharedPreferencesUtil.getSessionNickname(this@BoardInsert) // 작성자 정보
+        val userNicname = SharedPreferencesUtil.getSessionNickname(this@BoardInsert) ?: "" // 작성자 정보
         val title = findViewById<EditText>(R.id.boardtitle).text.toString()
         val content = findViewById<EditText>(R.id.boardcontent).text.toString()
         val barName = dropBarList.selectedItem.toString() // 선택된 식당 이름
         val barImg = getSelectedBarImageUrl(barName) // 해당 식당 이미지 URL 가져오기
         val memberCount = findViewById<EditText>(R.id.partyone).text.toString()
-//        val meetdate = dateFormat.format(calendar.time).toString() // 만남 날짜
         val meetdate = dateFormat.format(calendar.time).toString() + " " + timeFormat.format(calendar.time).toString() // 만남 날짜와 시간
-
         val regdate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()) // 등록 날짜
 
         boardService = RetrofitBuilder.BoardService()
-        val call = userNicname?.let {
-            boardService.insertBoard(
-                it,
-                title,
-                content,
-                barName,
-                barImg,
-                memberCount,
-                meetdate,
-                regdate
-            )
-        }
 
-        if (call != null) {
-            call.enqueue(object : Callback<ResponseBody> {
-                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(applicationContext, "게시글이 등록되었습니다.", Toast.LENGTH_SHORT).show()
-                        Log.d(TAG, "응답 코드: ${response.code()}")
-                    } else {
-                        // 전송 실패한 경우의 처리
-                        Toast.makeText(applicationContext, "게시글 등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                        Log.d(TAG, "응답 코드: ${response.code()}")
-                    }
-                }
+        val board = BoardDto("", userNicname, title, content, barName, barImg, memberCount, meetdate, regdate)
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    // 통신 실패 처리
-                    Log.e(TAG, "통신 실패: ${t.message}")
-                    Toast.makeText(applicationContext, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+        val call = boardService.insertBoard(board)
+
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(applicationContext, "게시글이 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "응답 코드: ${response.code()}")
+                } else {
+                    // 전송 실패한 경우의 처리
+                    Toast.makeText(applicationContext, "게시글 등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "응답 코드: ${response.code()}")
                 }
-            })
-        }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                // 통신 실패 처리
+                Log.e(TAG, "통신 실패: ${t.message}")
+                Toast.makeText(applicationContext, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
