@@ -1,4 +1,5 @@
 package com.example.foodmate3
+
 import androidx.appcompat.widget.Toolbar
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -39,8 +40,7 @@ import java.util.Locale
 
 class BoardInsert : AppCompatActivity() {
 
-    val TAG = this.javaClass.simpleName
-    private lateinit var toolbar: Toolbar
+    private val TAG: String = "BoardInsert"
 
     private lateinit var txtAppointment: TextView
     private lateinit var btnCalendar: Button
@@ -59,8 +59,7 @@ class BoardInsert : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_board_insert)
-        toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+
 
         val regButton: Button = findViewById(R.id.reg_button)
         val regCancel: Button = findViewById(R.id.reg_cancel)
@@ -96,49 +95,6 @@ class BoardInsert : AppCompatActivity() {
             showDatePicker()
 
         }
-    }
-
-    // 메뉴 리소스 XML의 내용을 앱바(App Bar)에 반영
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_toolbar, menu)
-
-        // MainActivity의 onCreateOptionsMenu 함수 내에서 호출하여 세션 유지 상태를 확인하는 예시입니다.
-        val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(this)
-        val loginMenuItem = menu.findItem(R.id.login)
-        val logoutMenuItem = menu.findItem(R.id.logout)
-
-        if (isLoggedIn) {
-            // 로그인 상태인 경우
-            loginMenuItem.isVisible = false // 로그인 메뉴 숨기기
-            logoutMenuItem.isVisible = true // 로그아웃 메뉴 보이기
-        } else {
-            // 로그아웃 상태인 경우
-            loginMenuItem.isVisible = true // 로그인 메뉴 보이기
-            logoutMenuItem.isVisible = false // 로그아웃 메뉴 숨기기
-        }
-        return true
-    }
-
-
-    //앱바(App Bar)에 표시된 액션 또는 오버플로우 메뉴가 선택되면
-    //액티비티의 onOptionsItemSelected() 메서드가 호출
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val itemId = item.itemId
-        if (itemId == R.id.login) {
-            // 사용자가 이미 로그인 화면에 있으므로 다시 이동할 필요가 없습니다.
-            return true
-        } else if (itemId == R.id.logout) {
-            // 로그아웃 처리
-            SharedPreferencesUtil.setLoggedIn(this, false) // 로그인 상태를 false로 설정합니다.
-            invalidateOptionsMenu() // 옵션 메뉴를 다시 그리도록 호출합니다.
-
-            // MainActivity2(로그인 화면)로 이동합니다.
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     //식당이름 리스트 불러오기
@@ -221,17 +177,16 @@ class BoardInsert : AppCompatActivity() {
     }
 
     private fun sendBoardData() {
-        val intent = Intent(this@BoardInsert, BoardDetail::class.java)
-        startActivity(intent)
         val userNicname = SharedPreferencesUtil.getSessionNickname(this@BoardInsert) // 작성자 정보
         val title = findViewById<EditText>(R.id.boardtitle).text.toString()
         val content = findViewById<EditText>(R.id.boardcontent).text.toString()
         val barName = dropBarList.selectedItem.toString() // 선택된 식당 이름
         val barImg = getSelectedBarImageUrl(barName) // 해당 식당 이미지 URL 가져오기
         val memberCount = findViewById<EditText>(R.id.partyone).text.toString()
-        val meetdate = dateFormat.format(calendar.time).toString() // 만남 날짜
-        val regdate =
-            SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()) // 등록 날짜
+//        val meetdate = dateFormat.format(calendar.time).toString() // 만남 날짜
+        val meetdate = dateFormat.format(calendar.time).toString() + " " + timeFormat.format(calendar.time).toString() // 만남 날짜와 시간
+
+        val regdate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()) // 등록 날짜
 
         boardService = RetrofitBuilder.BoardService()
         val call = userNicname?.let {
