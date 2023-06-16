@@ -22,7 +22,6 @@
         android:layout_weight="1">
     </LinearLayout>
 
-
     <ImageButton
         android:id="@+id/plus"
         android:layout_gravity="right"

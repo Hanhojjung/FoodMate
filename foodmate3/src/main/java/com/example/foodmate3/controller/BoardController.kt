@@ -16,7 +16,10 @@ interface BoardController {
         @Query("title") title: String,
         @Query("content") content: String,
         @Query("bar_name") bar_name: String,
-        @Query("user_count") user_count: String
+        @Query("user_count") user_count: String,
+        @Query("meetdate") bar_appoint : String,
+        @Query("regdate")regdate : String
+
     ): Call<ResponseBody>
 
 
@@ -31,5 +34,6 @@ interface BoardController {
         @Query("content") content: String,
         @Query("bar_name") bar_name: String,
         @Query("user_count") user_count: String,
+        @Query("bar_appoint") bar_appoint : String
         )
 }
