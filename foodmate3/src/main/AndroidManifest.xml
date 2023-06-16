@@ -16,6 +16,9 @@
         android:theme="@style/Theme.FoodMate"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".BoardListActivity"
+            android:exported="true" />
+        <activity
             android:name=".IntroActivity"
             android:exported="true" />
         <activity

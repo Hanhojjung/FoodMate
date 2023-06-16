@@ -231,7 +231,7 @@ class BoardInsert : AppCompatActivity() {
         val memberCount = findViewById<EditText>(R.id.partyone).text.toString()
         val meetdate = dateFormat.format(calendar.time).toString() // 만남 날짜
         val regdate =
-            SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()) // 등록 날짜
+            SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()) // 등록 날짜
 
         boardService = RetrofitBuilder.BoardService()
         val call = userNicname?.let {

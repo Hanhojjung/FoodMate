@@ -45,4 +45,17 @@ object RetrofitBuilder {
 
         return retrofit.create(BoardController::class.java)
     }
+
+    fun BoardListService(): BoardController {
+        val gson = GsonBuilder()
+            .setLenient()
+            .create()
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+        return retrofit.create(BoardController::class.java)
+    }
+
+
 }

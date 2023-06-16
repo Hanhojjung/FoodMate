@@ -35,4 +35,7 @@ interface BoardController {
         @Query("user_count") user_count: String,
     )
 
+    @GET("/boardList")
+    fun getAllBoard(): Call<List<BoardDto>>
+
 }
