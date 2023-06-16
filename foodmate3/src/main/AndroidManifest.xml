@@ -17,7 +17,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".UpdateActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".BoardListActivity"
             android:exported="true" />

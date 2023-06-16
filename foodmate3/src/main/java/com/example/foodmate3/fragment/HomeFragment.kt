@@ -72,4 +72,10 @@ class HomeFragment : Fragment() {
             }
         })
     }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // 자원 해제 코드 작성
+        // 예시: boardAdapter의 데이터를 초기화하여 자원을 해제
+        boardAdapter.setData(emptyList())
+    }
 }

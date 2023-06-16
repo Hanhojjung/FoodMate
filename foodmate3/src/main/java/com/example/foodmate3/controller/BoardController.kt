@@ -38,4 +38,6 @@ interface BoardController {
     @GET("/boardList")
     fun getAllBoard(): Call<List<BoardDto>>
 
+    @GET("/myBoard")
+    fun getMyBoard():Call<List<BoardDto>>
 }
