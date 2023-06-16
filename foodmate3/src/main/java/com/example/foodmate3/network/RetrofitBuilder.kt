@@ -1,6 +1,7 @@
 package com.example.foodmate3.network
 
 import com.example.foodmate3.controller.BarController
+import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.controller.MemberController
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
@@ -31,5 +32,17 @@ object RetrofitBuilder {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
         return retrofit.create(BarController::class.java)
+    }
+    fun BoardService(): BoardController {
+        val gson = GsonBuilder()
+            .setLenient()
+            .create()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+        return retrofit.create(BoardController::class.java)
     }
 }

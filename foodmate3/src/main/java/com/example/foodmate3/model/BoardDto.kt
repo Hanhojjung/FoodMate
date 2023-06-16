@@ -1,13 +1,12 @@
 package com.example.foodmate3.model
 
-data class BoardDto (
-
+data class BoardDto(
+    val userNicname : String,
     val title: String,
-    val user_count: String,
-    val bar_name: String,
-    val meetdate: String,
     val content: String,
-    val writter : String,
+    val barName: String,
+    val barImg : String,
+    val memberCount: String,
+    val meetdate : String,
     val regdate : String
-
-    )
+)

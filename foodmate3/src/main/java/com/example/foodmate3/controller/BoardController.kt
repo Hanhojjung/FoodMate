@@ -12,16 +12,15 @@ interface BoardController {
 
     @POST("/insertBoard")
     fun insertBoard(
-        @Query("writter") writter: String,
+        @Query("userNicname") userNicname: String,
         @Query("title") title: String,
         @Query("content") content: String,
-        @Query("bar_name") bar_name: String,
-        @Query("user_count") user_count: String,
-        @Query("meetdate") bar_appoint : String,
-        @Query("regdate")regdate : String
-
+        @Query("barName") barName: String,
+        @Query("barImg") barImg: String,
+        @Query("memberCount") memberCount: String,
+        @Query("meetdate") meetdate : String,
+        @Query("regdate") regdate : String
     ): Call<ResponseBody>
-
 
     @GET("/getBoardDetail")
     fun getBoardDetail(
@@ -34,6 +33,6 @@ interface BoardController {
         @Query("content") content: String,
         @Query("bar_name") bar_name: String,
         @Query("user_count") user_count: String,
-        @Query("bar_appoint") bar_appoint : String
-        )
+    )
+
 }
