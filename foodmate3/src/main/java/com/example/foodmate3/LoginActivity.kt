@@ -19,7 +19,7 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
-    private val TAG: String = "MainActivity2"
+    private val TAG: String = "LoginActivity"
     private lateinit var binding: ActivityLoginBinding
     private lateinit var apiService: MemberController
 
@@ -98,7 +98,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun getNicknameAndSaveSession(sessionId: String, sessionPw: String, sessionNickname: String) {
-        // Modify this part to retrieve the nickname using Retrofit and store the session
         apiService.getMemberDetail(sessionId).enqueue(object : Callback<MemberDto> { // Assuming getMemberDetail API returns Member
             override fun onResponse(call: Call<MemberDto>, response: Response<MemberDto>) {
                 if (response.isSuccessful) {

@@ -3,12 +3,14 @@ package com.example.foodmate3
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.PopupMenu
+import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.ActivityMainBinding
@@ -48,6 +50,16 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
+        } else {
+            // 회원 탈퇴 후 세션 리로드
+            val sessionId = SharedPreferencesUtil.getSessionId(this)
+            val sessionPw = SharedPreferencesUtil.getSessionPw(this)
+            val sessionNickname = SharedPreferencesUtil.getSessionNickname(this)
+
+            if (sessionId != null && sessionPw != null && sessionNickname != null) {
+                SharedPreferencesUtil.reloadSessionAfterWithdrawal(this, sessionId, sessionPw, sessionNickname)
+            }
+
         }
     }
 
@@ -55,7 +67,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_toolbar, menu)
 
-        // MainActivity의 onCreateOptionsMenu 함수 내에서 호출하여 세션 유지 상태를 확인하는 예시입니다.
         val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(this)
         val loginMenuItem = menu.findItem(R.id.login)
         val logoutMenuItem = menu.findItem(R.id.logout)
@@ -64,17 +75,34 @@ class MainActivity : AppCompatActivity() {
             // 로그인 상태인 경우
             loginMenuItem.isVisible = false // 로그인 메뉴 숨기기
             logoutMenuItem.isVisible = true // 로그아웃 메뉴 보이기
+
+            // 닉네임 가져오기
+            val nickname = SharedPreferencesUtil.getSessionNickname(this)
+
+            // 닉네임을 툴바에 표시
+            val toolbar = findViewById<Toolbar>(R.id.toolbar)
+            toolbar.subtitle = "$nickname"
         } else {
             // 로그아웃 상태인 경우
             loginMenuItem.isVisible = true // 로그인 메뉴 보이기
             logoutMenuItem.isVisible = false // 로그아웃 메뉴 숨기기
+
+            // 로그인 상태가 아니므로 닉네임을 툴바에서 제거
+            val toolbar = findViewById<Toolbar>(R.id.toolbar)
+            toolbar.subtitle = null
         }
+
+        // 회원 탈퇴 후 세션 데이터가 없는 경우 로그인 메뉴만 표시되도록 처리
+        val sessionExists = SharedPreferencesUtil.checkSessionExists(this)
+        if (!sessionExists) {
+            logoutMenuItem.isVisible = false // 로그아웃 메뉴 숨기기
+        }
+
         return true
     }
 
-
-    //앱바(App Bar)에 표시된 액션 또는 오버플로우 메뉴가 선택되면
-    //액티비티의 onOptionsItemSelected() 메서드가 호출
+    // 앱바(App Bar)에 표시된 액션 또는 오버플로우 메뉴가 선택되면
+    // 액티비티의 onOptionsItemSelected() 메서드가 호출
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
         if (itemId == R.id.login) {
@@ -93,7 +121,6 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
     private fun init() {
         home_ly = binding.homeLy
@@ -152,8 +179,7 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this@MainActivity, MyWritePage::class.java)
                 startActivity(intent)
                 return@OnMenuItemClickListener true
-            }
-            else if (itemId == R.id.barlist) {
+            } else if (itemId == R.id.barlist) {
                 // 내가 작성한 글 보기 메뉴 클릭 시 처리할 로직 작성
                 // 예: MyWritePage로 이동
                 val intent = Intent(this@MainActivity, BarListActivity::class.java)

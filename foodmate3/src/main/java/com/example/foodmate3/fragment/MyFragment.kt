@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.foodmate3.R
+import com.example.foodmate3.UpdateActivity
 import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.FragmentMyBinding
 
@@ -32,7 +33,7 @@ class MyFragment : Fragment() {
         nicknameTextView = binding.nickname
 
         val sessionNickname = SharedPreferencesUtil.getSessionNickname(requireContext())
-        Log.d("MyFragment", "Session nickname: $sessionNickname")
+        Log.d("MyFragment", "$sessionNickname")
         setSessionNickname(sessionNickname)
 
 
@@ -66,10 +67,10 @@ class MyFragment : Fragment() {
         }
 
         binding.profile.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            intent.type = "image/*"
-            requestGalleryLauncher.launch(intent)
+            val intent = Intent(requireContext(), UpdateActivity::class.java)
+            startActivity(intent)
         }
+
 
         return view
     }

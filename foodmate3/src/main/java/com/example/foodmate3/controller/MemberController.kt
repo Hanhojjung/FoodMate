@@ -24,11 +24,7 @@ interface MemberController {
     fun getMemberDetail(@Query("id") id: String): Call<MemberDto>
 
     @POST("/updateMember")
-    fun updateMember(
-        @Query("id") id: String,
-        @Query("pw") pw: String,
-        @Query("nickname") nickname: String
-    ): Call<String>
+    fun updateMember(@Body member: MemberDto): Call<String>
 
     @GET("/deleteMember")
     fun deleteMember(@Query("id") id: String): Call<String>
@@ -37,25 +33,5 @@ interface MemberController {
     fun login(
         @Body member: MemberDto
     ): Call<LoginResponse>
-
-    @POST("/logout")
-    fun logout(
-        @Header("Cookie") sessionId: String
-    ): Call<String>
-
-    @GET("/api/checkSession")
-    fun checkSession(
-        @Header("Cookie") sessionId: String
-    ): Call<String>
-
-    // 게시글 작성
-    @POST("/insertBoard/{point}")
-    fun insertBoard(
-        @Path("point") point: String,
-        @Query("nickname") id: String,
-        @Query("pw") pw: String,
-        @Query("nickname") nickname: String
-    ): Call<ResponseBody>
-
 
 }

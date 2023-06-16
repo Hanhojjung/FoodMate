@@ -9,3 +9,8 @@ data class LoginResponse(
 )
 
 data class RegisterResponse(val status: String, val message: String)
+
+data class UpdateResponse(
+    val success: Boolean,
+    val message: String
+)

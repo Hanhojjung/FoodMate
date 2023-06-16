@@ -25,7 +25,15 @@ object SharedPreferencesUtil {
         }
     }
 
+    fun getSessionId(context: Context): String? {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getString(KEY_SESSION_ID, null)
+    }
 
+    fun getSessionPw(context: Context): String? {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getString(KEY_SESSION_PW, null)
+    }
 
     fun getSessionNickname(context: Context): String? {
         val sharedPreferences = getSharedPreferences(context)
@@ -45,11 +53,52 @@ object SharedPreferencesUtil {
         return sharedPreferences.getBoolean(KEY_LOGGED_IN, false)
     }
 
-    fun setSessionNickname(context: Context, nickname: String) {
+    fun updateSession(context: Context, id: String, password: String, nickname: String) {
         val sharedPreferences = getSharedPreferences(context)
-        sharedPreferences.edit().apply {
-            putString(KEY_SESSION_NICKNAME, nickname)
-            apply()
+        val editor = sharedPreferences.edit()
+        editor.putString(KEY_SESSION_ID, id)
+        editor.putString(KEY_SESSION_PW, password)
+        editor.putString(KEY_SESSION_NICKNAME, nickname)
+        editor.apply()
+    }
+
+
+    fun reloadSession(context: Context, sessionId: String, sessionPw: String, sessionNickname: String?) {
+        val sharedPreferences = getSharedPreferences(context)
+        val loadedSessionId = sharedPreferences.getString(KEY_SESSION_ID, null)
+
+        if (loadedSessionId == sessionId) {
+            saveSession(context, sessionId, sessionPw, sessionNickname)
         }
     }
+
+    fun clearSession(context: Context) {
+        val sharedPreferences = getSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+    }
+
+    fun checkSessionExists(context: Context): Boolean {
+        val sharedPreferences = getSharedPreferences(context)
+        val sessionId = sharedPreferences.getString(KEY_SESSION_ID, null)
+        val sessionPw = sharedPreferences.getString(KEY_SESSION_PW, null)
+        val sessionNickname = sharedPreferences.getString(KEY_SESSION_NICKNAME, null)
+
+        return !sessionId.isNullOrEmpty() && !sessionPw.isNullOrEmpty() && !sessionNickname.isNullOrEmpty()
+    }
+
+    fun reloadSessionAfterWithdrawal(context: Context, sessionId: String, sessionPw: String, sessionNickname: String?) {
+        val sharedPreferences = getSharedPreferences(context)
+        val loadedSessionId = sharedPreferences.getString(KEY_SESSION_ID, null)
+
+        if (loadedSessionId == sessionId) {
+            val savedSessionPw = sharedPreferences.getString(KEY_SESSION_PW, null)
+            val savedSessionNickname = sharedPreferences.getString(KEY_SESSION_NICKNAME, null)
+            saveSession(context, sessionId, savedSessionPw ?: "", savedSessionNickname)
+        }
+    }
+
+
+
 }
