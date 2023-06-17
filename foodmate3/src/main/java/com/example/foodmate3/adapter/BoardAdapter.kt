@@ -5,12 +5,14 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.foodmate3.BoardDetail
+import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.ItemBoardBinding
 import com.example.foodmate3.model.BoardDto
 
@@ -19,6 +21,7 @@ class BoardViewHolder(val binding: ItemBoardBinding) : RecyclerView.ViewHolder(b
 
 class BoardAdapter(private val context: Context, private val boardList: MutableList<BoardDto>) :
     RecyclerView.Adapter<BoardViewHolder>() {
+    private val sessionNickname = SharedPreferencesUtil.getSessionNickname(context)
 
     override fun getItemCount(): Int {
         return boardList.size
@@ -60,6 +63,8 @@ class BoardAdapter(private val context: Context, private val boardList: MutableL
             context.startActivity(intent)
         }
     }
+
+
     fun setData(data: List<BoardDto>?) {
         boardList.clear()
         if (data != null) {

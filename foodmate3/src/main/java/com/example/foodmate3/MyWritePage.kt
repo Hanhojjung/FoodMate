@@ -9,11 +9,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodmate3.adapter.BoardAdapter
 import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.controller.SharedPreferencesUtil
-import com.example.foodmate3.databinding.ActivityBoardListBinding
 import com.example.foodmate3.databinding.ActivityMyWritePageBinding
 import com.example.foodmate3.fragment.CalendarFragment
 import com.example.foodmate3.fragment.ChatFragment
@@ -22,9 +22,11 @@ import com.example.foodmate3.fragment.MyFragment
 import com.example.foodmate3.model.BoardDto
 import com.example.foodmate3.network.RetrofitBuilder
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.HttpException
+import retrofit2.Response
+import java.io.IOException
 
 class MyWritePage : AppCompatActivity() {
     private val TAG: String = "MyWritePage"
@@ -33,6 +35,7 @@ class MyWritePage : AppCompatActivity() {
     private lateinit var binding: ActivityMyWritePageBinding
     private lateinit var boardService: BoardController
 
+    private lateinit var recyclerView: RecyclerView
     private lateinit var boardAdapter: BoardAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +44,19 @@ class MyWritePage : AppCompatActivity() {
         setSupportActionBar(binding.toolbar) // 툴바 설정
 
         boardService = RetrofitBuilder.BoardListService()
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this@MyWritePage)
+
+        val boardList: MutableList<BoardDto> = mutableListOf()
+        boardAdapter = BoardAdapter(this@MyWritePage, boardList)
+        recyclerView.adapter = boardAdapter
+
+
+        // 세션 닉네임 가져오기
+        val sessionNicname = SharedPreferencesUtil.getSessionNickname(this)
+        sessionNicname?.let {
+            getBoardList(boardService, it) // 게시물 리스트 가져오기
+        }
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         bottomNavigationView!!.setOnNavigationItemSelectedListener(TabSelectedListener())
@@ -50,6 +66,37 @@ class MyWritePage : AppCompatActivity() {
 
         val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(this)
         Log.d(TAG, "세션 유지 상태: $isLoggedIn")
+    }
+
+
+    private fun getBoardList(boardService: BoardController, sessionNicname: String) {
+        val boardListCall: Call<List<BoardDto>> = boardService.getMyBoard(sessionNicname)
+
+        boardListCall.enqueue(object : Callback<List<BoardDto>> {
+            override fun onResponse(call: Call<List<BoardDto>>, response: Response<List<BoardDto>>) {
+                if (response.isSuccessful) {
+                    val boardListResponse = response.body()
+                    Log.d("lsy", "test: " + boardListResponse)
+                    boardListResponse?.let { boardList ->
+                        // 세션 닉네임과 동일한 닉네임으로 작성된 게시물 필터링
+                        val filteredList = boardList.filter { it.userNicname == sessionNicname }
+                        boardAdapter.setData(filteredList)
+                    }
+                } else {
+                    Log.e("MyBoardList", "Error: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<BoardDto>>, t: Throwable) {
+                if (t is IOException) {
+                    Log.e("MyBoardList", "Network Error: ${t.message}")
+                } else if (t is HttpException) {
+                    Log.e("MyBoardList", "HTTP Error: ${t.code()}")
+                } else {
+                    Log.e("MyBoardList", "Error: ${t.message}")
+                }
+            }
+        })
     }
     private fun SettingListener() {
         // 선택 리스너 등록
@@ -97,35 +144,35 @@ class MyWritePage : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-        internal inner class TabSelectedListener :
-            BottomNavigationView.OnNavigationItemSelectedListener {
-            @SuppressLint("NonConstantResourceId")
-            override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-                val itemId = menuItem.itemId
-                if (itemId == R.id.tab_home) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.home_ly, HomeFragment())
-                        .commit()
-                    return true
-                } else if (itemId == R.id.tab_chat) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.home_ly, ChatFragment())
-                        .commit()
-                    return true
-                } else if (itemId == R.id.tab_calendar) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.home_ly, CalendarFragment())
-                        .commit()
-                    return true
-                } else if (itemId == R.id.tab_my) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.home_ly, MyFragment())
-                        .commit()
-                    return true
-                }
-                return false
+    internal inner class TabSelectedListener :
+        BottomNavigationView.OnNavigationItemSelectedListener {
+        @SuppressLint("NonConstantResourceId")
+        override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
+            val itemId = menuItem.itemId
+            if (itemId == R.id.tab_home) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.home_ly, HomeFragment())
+                    .commit()
+                return true
+            } else if (itemId == R.id.tab_chat) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.home_ly, ChatFragment())
+                    .commit()
+                return true
+            } else if (itemId == R.id.tab_calendar) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.home_ly, CalendarFragment())
+                    .commit()
+                return true
+            } else if (itemId == R.id.tab_my) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.home_ly, MyFragment())
+                    .commit()
+                return true
             }
+            return false
         }
+    }
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(this, view)
         popupMenu.inflate(R.menu.board_menu)

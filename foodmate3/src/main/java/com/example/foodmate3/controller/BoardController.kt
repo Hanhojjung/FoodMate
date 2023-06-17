@@ -31,6 +31,6 @@ interface BoardController {
     )
 
     @GET("/myBoard")
-    fun getMyBoard():Call<List<BoardDto>>
+    fun getMyBoard(@Query("userNicname") userNicname: String): Call<List<BoardDto>>
 
 }
