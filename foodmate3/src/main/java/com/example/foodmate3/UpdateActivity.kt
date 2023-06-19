@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.foodmate3.controller.MemberController
+import com.example.foodmate3.controller.PasswordHashUtil
 import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.ActivityUpdateBinding
 import com.example.foodmate3.model.MemberDto
@@ -75,7 +76,9 @@ class UpdateActivity : AppCompatActivity() {
     }
 
     private fun updateMemberInfo(member: MemberDto) {
-        apiService.updateMember(member).enqueue(object : Callback<String> {
+        val hashedPw = PasswordHashUtil.hashPassword(member.pw) // 비밀번호를 해싱합니다.
+        val updatedMember = MemberDto(member.id, hashedPw, member.nickname)
+        apiService.updateMember(updatedMember).enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
                     val updateResponse = response.body()
