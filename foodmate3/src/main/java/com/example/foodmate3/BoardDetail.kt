@@ -48,9 +48,16 @@ class BoardDetail : AppCompatActivity() {
         }
 
         regDelete.setOnClickListener {
-            // 예: 수정 버튼을 클릭 시 BoardDelete로 이동
-            val intent = Intent(this@BoardDetail, BoardDelete::class.java)
-            startActivity(intent)
+            // 예: 삭제 버튼을 클릭 시 BoardDelete로 이동
+            val boardId = intent.getStringExtra("boardId")
+
+            if (boardId != null) {
+                val intent = Intent(this@BoardDetail, BoardDelete::class.java)
+                intent.putExtra("boardId", boardId)
+                startActivity(intent)
+            } else {
+                Log.e("BoardDetail", "Error: Board ID is null")
+            }
         }
         val boardId = intent.getStringExtra("boardId")
 

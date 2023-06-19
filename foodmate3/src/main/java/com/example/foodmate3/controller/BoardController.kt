@@ -33,4 +33,9 @@ interface BoardController {
     @GET("/myBoard")
     fun getMyBoard(@Query("userNicname") userNicname: String): Call<List<BoardDto>>
 
+    @GET("/deleteBoard")
+    fun deleteBoard(
+        @Query("boardid") boardid: String
+    ): Call<ResponseBody>
+
 }

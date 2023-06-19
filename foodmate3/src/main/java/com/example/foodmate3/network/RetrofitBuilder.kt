@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitBuilder {
-    private const val BASE_URL = "http://192.168.35.210:7080"
+    private const val BASE_URL = "http://10.100.105.203:7080"
 
     fun MemberService(): MemberController {
         val gson = GsonBuilder()
