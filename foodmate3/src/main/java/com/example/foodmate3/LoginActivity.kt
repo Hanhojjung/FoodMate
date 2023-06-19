@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.example.foodmate3.controller.MemberController
+import com.example.foodmate3.controller.PasswordHashUtil
 import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.ActivityLoginBinding
 import com.example.foodmate3.model.LoginResponse
@@ -57,7 +58,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login(id: String, pw: String, nickname: String) {
-        val member = MemberDto(id, pw, nickname)
+        val hashedPw = PasswordHashUtil.hashPassword(pw) // 비밀번호를 해싱합니다.
+        val member = MemberDto(id, hashedPw, nickname)
         val call = apiService.login(member)
         Log.d(TAG, "로그인 요청 - ID: $id, PW: $pw")
         call.enqueue(object : Callback<LoginResponse> {

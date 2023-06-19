@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.foodmate3.controller.MemberController
+import com.example.foodmate3.controller.PasswordHashUtil
 import com.example.foodmate3.databinding.ActivityJoinBinding
 import com.example.foodmate3.network.RetrofitBuilder
 import okhttp3.ResponseBody
@@ -57,7 +58,8 @@ class JoinActivity : AppCompatActivity() {
     }
 
     private fun insertMember(id: String, pw: String, nickname: String) {
-        val call: Call<ResponseBody> = apiService.insertMember(id, pw, nickname)
+        val hashedPw = PasswordHashUtil.hashPassword(pw) // 비밀번호를 해시하여 암호화
+        val call: Call<ResponseBody> = apiService.insertMember(id, hashedPw, nickname)
 
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

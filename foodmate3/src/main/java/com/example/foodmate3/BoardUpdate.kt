@@ -68,16 +68,13 @@ class BoardUpdate : AppCompatActivity() {
         binding.partyone.setText(boardDto.memberCount)
         binding.appointment.setText(boardDto.meetdate)
         binding.boardid.setText(boardDto.boardid)
+        binding.dropBarlist
         // 필요한 정보들을 각각의 UI 요소에 맞게 표시
 
         // 업데이트 버튼 클릭 이벤트 처리
         binding.regUpdate.setOnClickListener {
             // 수정된 정보를 가져옴
-            val updatedTitle = binding.boardtitle.text.toString()
-            val updatedContent = binding.boardcontent.text.toString()
-            val updatedPartyOne = binding.partyone.text.toString()
 
-            // 필요한 정보들을 각각의 UI 요소에서 가져옴
 
             // 수정된 정보를 서버에 업데이트하는 로직을 구현
             updateBoard(boardDto.boardid)
