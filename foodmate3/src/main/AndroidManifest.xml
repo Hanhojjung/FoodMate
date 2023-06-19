@@ -16,6 +16,9 @@
         android:theme="@style/Theme.FoodMate"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ChatDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".UpdateActivity"
             android:exported="true" />
         <activity

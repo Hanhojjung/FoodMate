@@ -42,8 +42,8 @@ class BoardDetail : AppCompatActivity() {
         }
 
         regUpdate.setOnClickListener {
-            // 예: 수정 버튼을 클릭 시 BoardUpdate로 이동
             val intent = Intent(this@BoardDetail, BoardUpdate::class.java)
+
             startActivity(intent)
         }
 

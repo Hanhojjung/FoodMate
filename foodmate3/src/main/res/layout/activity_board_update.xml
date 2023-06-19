@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:padding="16dp"
     android:layout_height="match_parent"
@@ -8,14 +9,14 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="508dp"
         android:layout_weight="1"
         android:fillViewport="true">
 
         <LinearLayout
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -27,18 +28,18 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:text="제목"/>
+                    android:text="제목" />
 
                 <EditText
-                    android:id="@+id/title_tv"
-                    android:padding="16dp"
-                    android:background="#eeeeee"
+                    android:id="@+id/boardtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="제목입니다."
-                    />
+                    android:background="#eeeeee"
+                    android:padding="16dp"
+                    android:text="제목입니다." />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,36 +49,41 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:text="작성일"/>
+                    android:text="식당" />
 
-                <TextView
-                    android:id="@+id/date_tv"
-                    android:padding="16dp"
-                    android:background="#eeeeee"
+                <Spinner
+                    android:id="@+id/drop_barlist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="작성일"
-                    />
+                    android:background="#eeeeee"
+                    android:padding="16dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:text="인원수"/>
+                    android:text="인원수" />
 
                 <EditText
                     android:id="@+id/partyone"
-                    android:padding="16dp"
-                    android:background="#eeeeee"
-                    android:textSize="14dp"
-                    android:inputType="number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="인원 수" />
+                    android:background="#eeeeee"
+                    android:inputType="number"
+                    android:padding="16dp"
+                    android:text="인원 수 입력"
+                    android:textSize="14dp" />
 
             </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -86,98 +92,73 @@
 
                 <TextView
                     android:layout_width="100dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:padding="16dp"
-                    android:text="약속 일정"/>
+                    android:text="약속 일정" />
 
                 <TextView
                     android:id="@+id/appointment"
-                    android:layout_width="150dp"
-                    android:layout_marginLeft="0dp"
+                    android:layout_width="189dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
                     android:padding="16dp"
-                    android:text="일정을 잡아주세요"/>
+                    android:text="일정을 잡아주세요" />
 
                 <Button
-                    android:backgroundTint="@color/orange"
                     android:id="@+id/btn_calendar"
-                    android:layout_marginLeft="30dp"
                     android:layout_width="80dp"
                     android:layout_height="40dp"
-                    android:textSize="10dp"
+                    android:backgroundTint="@color/orange"
                     android:text="약속 잡기"
-                    />
+                    android:textSize="10dp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="200dp"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="100dp"
-                    android:layout_marginLeft="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="200dp"
                     android:padding="16dp"
-                    android:text="식당 이름" />
+                    android:text="내용" />
 
-                <TextView
-                    android:id="@+id/restaurant"
-                    android:layout_width="150dp"
-                    android:layout_marginLeft="0dp"
-                    android:layout_height="wrap_content"
+                <EditText
+                    android:id="@+id/boardcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="#eeeeee"
                     android:padding="16dp"
-                    android:text="식당을 정해주세요."/>
-
-                <Button
-                    android:backgroundTint="@color/orange"
-                    android:id="@+id/btn_restaurant"
-                    android:layout_marginLeft="30dp"
-                    android:layout_width="80dp"
-                    android:layout_height="40dp"
-                    android:textSize="10dp"
-                    android:text="식당 검색"
-                    />
-
+                    android:text="내용 작성" />
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="내용"/>
-
-            <EditText
-                android:id="@+id/content_tv"
-                android:padding="16dp"
-                android:background="#eeeeee"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="내용입니다."
-                />
+                android:orientation="horizontal"
+                android:layout_marginTop="50dp">
+
+                <Button
+                    android:id="@+id/reg_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/orange"
+                    android:padding="8dp"
+                    android:layout_marginLeft="90dp"
+                    android:text="수정 완료"/>
+
+                <Button
+                    android:id="@+id/reg_update_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/orange"
+                    android:padding="8dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="수정 취소"/>
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/reg_update"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:backgroundTint="@color/orange"
-            android:padding="8dp"
-            android:layout_marginLeft="90dp"
-            android:text="수정 완료"/>
-
-        <Button
-            android:id="@+id/reg_update_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:backgroundTint="@color/orange"
-            android:padding="8dp"
-            android:layout_marginLeft="20dp"
-            android:text="수정 취소"/>
-    </LinearLayout>
 </LinearLayout>
