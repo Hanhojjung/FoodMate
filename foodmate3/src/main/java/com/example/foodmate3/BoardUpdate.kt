@@ -2,6 +2,7 @@ package com.example.foodmate3
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.format.DateFormat
@@ -12,21 +13,28 @@ import android.widget.DatePicker
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.TimePicker
+import android.widget.Toast
 import com.example.foodmate3.controller.BarController
 import com.example.foodmate3.controller.BoardController
+import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.ActivityBoardUpdateBinding
 import com.example.foodmate3.model.BarDto
 import com.example.foodmate3.model.BoardDto
 import com.example.foodmate3.network.RetrofitBuilder
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class BoardUpdate : AppCompatActivity() {
 
+    private val TAG: String = "BoardUpdate"
     private lateinit var boardDto: BoardDto
     private lateinit var binding: ActivityBoardUpdateBinding
     private lateinit var calendar: Calendar
@@ -35,7 +43,7 @@ class BoardUpdate : AppCompatActivity() {
     private lateinit var txtAppointment: TextView
     private lateinit var btnCalendar: Button
 
-    //식당 리스트
+    // 식당 리스트
     private lateinit var dropBarList: Spinner
     private lateinit var barService: BarController
     private lateinit var barListResponse: List<BarDto>
@@ -59,18 +67,17 @@ class BoardUpdate : AppCompatActivity() {
         binding.appointment.setText(boardDto.meetdate)
         // 필요한 정보들을 각각의 UI 요소에 맞게 표시
 
-
-
         // 업데이트 버튼 클릭 이벤트 처리
         binding.regUpdate.setOnClickListener {
             // 수정된 정보를 가져옴
             val updatedTitle = binding.boardtitle.text.toString()
             val updatedContent = binding.boardcontent.text.toString()
-            val updatedpartyone = binding.partyone.text.toString()
+            val updatedPartyOne = binding.partyone.text.toString()
+
             // 필요한 정보들을 각각의 UI 요소에서 가져옴
 
             // 수정된 정보를 서버에 업데이트하는 로직을 구현
-            updateBoard(boardDto.boardid, updatedTitle, updatedContent, updatedpartyone)
+            updateBoard(boardDto.boardid, updatedTitle, updatedContent, updatedPartyOne)
         }
 
         txtAppointment = findViewById(R.id.appointment)
@@ -82,24 +89,19 @@ class BoardUpdate : AppCompatActivity() {
 
         btnCalendar.setOnClickListener {
             showDatePicker()
-
         }
 
-
-        //식당 리스트 컨트롤러
+        // 식당 리스트 컨트롤러
         dropBarList = findViewById(R.id.drop_barlist)
         barService = RetrofitBuilder.BarListService()
 
-        //보드 레트로핏 연결
+        // 보드 레트로핏 연결
         boardService = RetrofitBuilder.BoardService()
 
         getRestaurantList(barService)
-
-
     }
 
-
-    //식당이름 리스트 불러오기
+    // 식당 이름 리스트 불러오기
     private fun getRestaurantList(barService: BarController) {
         val restaurantListCall: Call<List<BarDto>> = barService.getAllBars()
 
@@ -137,7 +139,6 @@ class BoardUpdate : AppCompatActivity() {
         val selectedBar = barListResponse.firstOrNull { it.main_TITLE == barName }
         return selectedBar?.main_IMG_NORMAL ?: ""
     }
-
 
     // 날짜 선택
     private fun showDatePicker() {
@@ -185,12 +186,54 @@ class BoardUpdate : AppCompatActivity() {
         boardId: String,
         updatedTitle: String,
         updatedContent: String,
-        updatedpartyone: String
+        updatedPartyOne: String
     ) {
-        // 서버에 업데이트 요청을 보내는 코드를 작성
-        // boardId와 수정된 정보(updatedTitle, updatedContent)를 활용하여 업데이트 로직을 구현
-        // 예: Retrofit을 사용하여 업데이트 요청을 보내고 처리 결과를 처리하는 콜백을 구현
+        val userNickname = SharedPreferencesUtil.getSessionNickname(this@BoardUpdate) ?: "" // 작성자 정보
+        val barName = dropBarList.selectedItem.toString() // 선택된 식당 이름
+        val barImg = getSelectedBarImageUrl(barName) // 선택된 식당의 이미지 URL
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val currentDateAndTime: String = sdf.format(Date()) // 현재 날짜와 시간
 
-        // 업데이트가 성공적으로 완료되면 업데이트된 정보를 MainActivity 등으로 전달하고 해당 액티비티를 종료할 수 있음
+        val updatedBoardDto = BoardDto(
+            boardId,
+            userNickname,
+            updatedTitle,
+            updatedContent,
+            barName,
+            barImg,
+            updatedPartyOne,
+            txtAppointment.text.toString(),
+            currentDateAndTime
+        )
+
+        val updateBoardCall: Call<ResponseBody> = boardService.updateBoard(boardId, updatedBoardDto)
+
+
+        updateBoardCall.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(
+                        this@BoardUpdate,
+                        "게시글이 업데이트되었습니다.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    val intent = Intent(this@BoardUpdate, MainActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    Log.e(TAG, "Error: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                if (t is IOException) {
+                    Log.e(TAG, "Network Error: ${t.message}")
+                } else if (t is HttpException) {
+                    Log.e(TAG, "HTTP Error: ${t.code()}")
+                } else {
+                    Log.e(TAG, "Error: ${t.message}")
+                }
+            }
+        })
     }
+
 }

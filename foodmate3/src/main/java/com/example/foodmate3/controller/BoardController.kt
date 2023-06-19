@@ -34,11 +34,11 @@ interface BoardController {
 //    )
 
 
-    @POST("/updateBoard")
-    fun updateBoard(
-        @Query("boardid") boardId: String, // 수정된 부분: boardid를 boardId로 변경
-        @Body board: BoardDto // 수정된 부분: @Query 어노테이션 대신 @Body 어노테이션 사용
-    )
+//    @POST("/updateBoard")
+//    fun updateBoard(
+//        @Query("boardid") boardId: String, // 수정된 부분: boardid를 boardId로 변경
+//        @Body board: BoardDto // 수정된 부분: @Query 어노테이션 대신 @Body 어노테이션 사용
+//    )
 
 
     @GET("/myBoard")
@@ -48,5 +48,14 @@ interface BoardController {
     fun deleteBoard(
         @Query("boardid") boardid: String
     ): Call<ResponseBody>
+
+    @POST("/updateBoard")
+    fun updateBoard(
+        @Query("boardid") boardId: String,
+        @Body board: BoardDto
+    ): Call<ResponseBody>
+
+
+
 
 }
