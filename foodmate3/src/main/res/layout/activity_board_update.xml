@@ -131,6 +131,21 @@
                     android:background="#eeeeee"
                     android:padding="16dp"
                     android:text="내용 작성" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/boardid"
+                    android:text="board id"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
             <LinearLayout

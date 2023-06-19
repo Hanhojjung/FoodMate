@@ -57,7 +57,6 @@ class BoardUpdate : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityBoardUpdateBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         val regUpdate: Button = findViewById(R.id.reg_update)
 
         // Intent로부터 BoardDto 객체를 가져옴
@@ -68,6 +67,7 @@ class BoardUpdate : AppCompatActivity() {
         binding.boardcontent.setText(boardDto.content)
         binding.partyone.setText(boardDto.memberCount)
         binding.appointment.setText(boardDto.meetdate)
+        binding.boardid.setText(boardDto.boardid)
         // 필요한 정보들을 각각의 UI 요소에 맞게 표시
 
         // 업데이트 버튼 클릭 이벤트 처리
@@ -201,8 +201,7 @@ class BoardUpdate : AppCompatActivity() {
             SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()) // 등록 날짜
 
 
-        val updatedBoardDto = BoardDto(
-            "",
+        val updatedBoardDto = BoardDto(boardId,
             userNicname,
             title,
             content,
