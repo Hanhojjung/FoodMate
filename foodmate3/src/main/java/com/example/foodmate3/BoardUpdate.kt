@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.DatePicker
+import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.TimePicker
@@ -50,6 +51,8 @@ class BoardUpdate : AppCompatActivity() {
 
     private lateinit var boardService: BoardController
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBoardUpdateBinding.inflate(layoutInflater)
@@ -77,7 +80,7 @@ class BoardUpdate : AppCompatActivity() {
             // 필요한 정보들을 각각의 UI 요소에서 가져옴
 
             // 수정된 정보를 서버에 업데이트하는 로직을 구현
-            updateBoard(boardDto.boardid, updatedTitle, updatedContent, updatedPartyOne)
+            updateBoard(boardDto.boardid)
         }
 
         txtAppointment = findViewById(R.id.appointment)
@@ -183,27 +186,31 @@ class BoardUpdate : AppCompatActivity() {
     }
 
     private fun updateBoard(
-        boardId: String,
-        updatedTitle: String,
-        updatedContent: String,
-        updatedPartyOne: String
+        boardId: String
     ) {
-        val userNickname = SharedPreferencesUtil.getSessionNickname(this@BoardUpdate) ?: "" // 작성자 정보
+        val userNicname = SharedPreferencesUtil.getSessionNickname(this@BoardUpdate) ?: "" // 작성자 정보
+        val title = findViewById<EditText>(R.id.boardtitle).text.toString()
+        val content = findViewById<EditText>(R.id.boardcontent).text.toString()
         val barName = dropBarList.selectedItem.toString() // 선택된 식당 이름
-        val barImg = getSelectedBarImageUrl(barName) // 선택된 식당의 이미지 URL
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val currentDateAndTime: String = sdf.format(Date()) // 현재 날짜와 시간
+        val barImg = getSelectedBarImageUrl(barName) // 해당 식당 이미지 URL 가져오기
+        val memberCount = findViewById<EditText>(R.id.partyone).text.toString()
+        val meetdate =
+            dateFormat.format(calendar.time).toString() + " " + timeFormat.format(calendar.time)
+                .toString() // 만남 날짜와 시간
+        val regdate =
+            SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()) // 등록 날짜
+
 
         val updatedBoardDto = BoardDto(
-            boardId,
-            userNickname,
-            updatedTitle,
-            updatedContent,
+            "",
+            userNicname,
+            title,
+            content,
             barName,
             barImg,
-            updatedPartyOne,
-            txtAppointment.text.toString(),
-            currentDateAndTime
+            memberCount,
+            meetdate,
+            regdate
         )
 
         val updateBoardCall: Call<ResponseBody> = boardService.updateBoard(boardId, updatedBoardDto)
