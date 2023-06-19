@@ -20,6 +20,7 @@ import retrofit2.Response
 
 
 class BoardDetail : AppCompatActivity() {
+    private lateinit var boardDto: BoardDto
 
     private val TAG: String = "BoardDetail"
     private lateinit var binding: ActivityBoardDetailBinding
@@ -43,8 +44,9 @@ class BoardDetail : AppCompatActivity() {
 
         regUpdate.setOnClickListener {
             val intent = Intent(this@BoardDetail, BoardUpdate::class.java)
-
+            intent.putExtra("boardDto", boardDto)
             startActivity(intent)
+
         }
 
         regDelete.setOnClickListener {
@@ -73,8 +75,8 @@ class BoardDetail : AppCompatActivity() {
         boardDetailCall.enqueue(object : Callback<BoardDto> {
             override fun onResponse(call: Call<BoardDto>, response: Response<BoardDto>) {
                 if (response.isSuccessful) {
-                    val boardDetailResponse = response.body()
-                    boardDetailResponse?.let {
+                    boardDto = response.body()!!
+                    boardDto?.let {
                         // 상세 정보를 처리하는 로직을 작성하세요.
                         // 예: 받은 데이터를 사용하여 UI에 표시
                         binding.BoardTitle.text = it.title
@@ -94,5 +96,6 @@ class BoardDetail : AppCompatActivity() {
                 Log.e("BoardDetail", "Error: ${t.message}")
             }
         })
+
     }
 }

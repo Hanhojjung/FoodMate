@@ -1,5 +1,7 @@
 package com.example.foodmate3.model
 
+import java.io.Serializable
+
 data class BoardDto(
     val boardid : String,
     val userNicname : String,
@@ -10,4 +12,4 @@ data class BoardDto(
     val memberCount: String,
     val meetdate : String,
     val regdate : String
-)
+) : Serializable
