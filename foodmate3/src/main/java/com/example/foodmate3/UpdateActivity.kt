@@ -7,9 +7,7 @@ import android.util.Log
 import com.example.foodmate3.controller.MemberController
 import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.ActivityUpdateBinding
-import com.example.foodmate3.fragment.MyFragment
 import com.example.foodmate3.model.MemberDto
-import com.example.foodmate3.model.UpdateResponse
 import com.example.foodmate3.network.RetrofitBuilder
 import retrofit2.Call
 import retrofit2.Callback

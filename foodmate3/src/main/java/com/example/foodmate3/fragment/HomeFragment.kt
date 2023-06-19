@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodmate3.adapter.BoardAdapter
 import com.example.foodmate3.controller.BoardController
+import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.FragmentHomeBinding
 import com.example.foodmate3.model.BoardDto
 import com.example.foodmate3.network.RetrofitBuilder

@@ -5,13 +5,13 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.foodmate3.BoardDetail
+import com.example.foodmate3.BoardDetail2
 import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.ItemBoardBinding
 import com.example.foodmate3.model.BoardDto
@@ -58,12 +58,19 @@ class BoardAdapter(private val context: Context, private val boardList: MutableL
             })
 
         binding.boardcheck.setOnClickListener {
-            val intent = Intent(context, BoardDetail::class.java)
-            intent.putExtra("boardId", boardList[position].boardid)
-            context.startActivity(intent)
+            val userNickname = board?.userNicname
+
+            if (sessionNickname == userNickname) {
+                val intent = Intent(context, BoardDetail::class.java)
+                intent.putExtra("boardId", boardList[position].boardid)
+                context.startActivity(intent)
+            } else {
+                val intent = Intent(context, BoardDetail2::class.java)
+                intent.putExtra("boardId", boardList[position].boardid)
+                context.startActivity(intent)
+            }
         }
     }
-
 
     fun setData(data: List<BoardDto>?) {
         boardList.clear()

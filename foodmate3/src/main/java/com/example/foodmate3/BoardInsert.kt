@@ -1,14 +1,11 @@
 package com.example.foodmate3
 
-import androidx.appcompat.widget.Toolbar
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.DatePicker
@@ -20,7 +17,6 @@ import android.widget.Toast
 import com.example.foodmate3.controller.BarController
 import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.controller.SharedPreferencesUtil
-import com.example.foodmate3.databinding.ActivityMainBinding
 import com.example.foodmate3.model.BarDto
 import com.example.foodmate3.model.BoardDto
 import com.example.foodmate3.network.RetrofitBuilder
@@ -29,8 +25,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.HttpException
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.text.DateFormat
 import java.text.SimpleDateFormat

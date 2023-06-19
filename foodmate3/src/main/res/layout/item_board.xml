@@ -178,6 +178,9 @@
             android:backgroundTint="@color/orange"
             android:text="상세보기" />
 
+
     </LinearLayout>
+
+
 
 </LinearLayout>

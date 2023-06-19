@@ -63,6 +63,7 @@ class BoardListActivity : AppCompatActivity() {
 
         val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(this)
         Log.d(TAG, "세션 유지 상태: $isLoggedIn")
+
     }
 
 
