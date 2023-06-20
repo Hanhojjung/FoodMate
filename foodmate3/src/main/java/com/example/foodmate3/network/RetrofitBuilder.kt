@@ -2,6 +2,7 @@ package com.example.foodmate3.network
 
 import com.example.foodmate3.controller.BarController
 import com.example.foodmate3.controller.BoardController
+import com.example.foodmate3.controller.MeetingController
 import com.example.foodmate3.controller.MemberController
 import com.example.foodmate3.controller.TodoController
 import com.google.gson.GsonBuilder
@@ -56,5 +57,18 @@ object RetrofitBuilder {
             .build()
 
         return retrofit.create(TodoController::class.java)
+    }
+
+    fun MeetingService(): MeetingController {
+        val gson = GsonBuilder()
+            .setLenient()
+            .create()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+        return retrofit.create(MeetingController::class.java)
     }
 }

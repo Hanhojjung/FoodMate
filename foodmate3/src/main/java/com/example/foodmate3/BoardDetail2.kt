@@ -53,7 +53,7 @@ class BoardDetail2 : AppCompatActivity() {
             val boardId = intent.getStringExtra("boardId")
 
             if (boardId != null) {
-                val intent = Intent(this@BoardDetail2, ChatDetailActivity::class.java)
+                val intent = Intent(this@BoardDetail2, MeetingActivity::class.java)
                 intent.putExtra("boardId", boardId)
                 startActivity(intent)
             } else {

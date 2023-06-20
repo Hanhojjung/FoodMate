@@ -16,20 +16,12 @@
         android:theme="@style/Theme.FoodMate"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".TestActivity"
-            android:exported="false" />
-        <activity
-            android:name=".BaseActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ChatDetailActivity"
-            android:exported="false" />
+            android:name=".MeetingActivity"
+            android:exported="true" />
         <activity
             android:name=".UpdateActivity"
             android:exported="true" />
-        <activity
-            android:name=".BoardListActivity"
-            android:exported="true" />
+
         <activity
             android:name=".IntroActivity"
             android:exported="true" />
