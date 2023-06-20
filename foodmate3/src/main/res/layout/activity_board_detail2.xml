@@ -188,15 +188,27 @@
                 android:text="목록" />
 
 
-            <ImageButton
-                android:id="@+id/heart"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+<!--            <ImageButton-->
+<!--                android:id="@+id/heart"-->
+<!--                android:layout_width="60dp"-->
+<!--                android:layout_height="60dp"-->
+<!--                android:layout_marginLeft="30dp"-->
+<!--                android:scaleType="fitCenter"-->
+<!--                android:backgroundTint="@color/white"-->
+<!--                android:background="#0F000000"-->
+<!--                android:src="@drawable/heart"/>-->
+
+            <ToggleButton
+                android:id="@+id/button_favorite"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="30dp"
+                android:background="@drawable/button_favorite"
+                android:checked="false"
                 android:scaleType="fitCenter"
-                android:backgroundTint="@color/white"
-                android:background="#0F000000"
-                android:src="@drawable/heart"/>
+                />
+
+
             <Button
                 android:id="@+id/chattingroom"
                 android:layout_width="120dp"

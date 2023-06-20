@@ -80,6 +80,11 @@ class BoardUpdate : AppCompatActivity() {
             updateBoard(boardDto.boardid)
         }
 
+        // 업데이트 취소 버튼 클릭 이벤트 처리
+        binding.regUpdateCancel.setOnClickListener {
+            finish()
+        }
+
         txtAppointment = findViewById(R.id.appointment)
         btnCalendar = findViewById(R.id.btn_calendar)
 

@@ -26,7 +26,7 @@ class BoardDetail2 : AppCompatActivity() {
         boardService = RetrofitBuilder.BoardListService()
 
         val regList: Button = findViewById(R.id.reg_list)
-        val heart : ImageButton = findViewById(R.id.heart)
+        val heart : Button = findViewById(R.id.button_favorite)
         val chattingroom : Button = findViewById(R.id.chattingroom)
 
 
@@ -36,18 +36,18 @@ class BoardDetail2 : AppCompatActivity() {
             startActivity(intent)
         }
 
-        heart.setOnClickListener {
-            // 예: 수정 버튼을 클릭 시 BoardUpdate로 이동
-            val intent = Intent(this@BoardDetail2, BoardUpdate::class.java)
-            startActivity(intent)
-        }
+//        heart.setOnClickListener {
+//            // 예: 수정 버튼을 클릭 시 BoardUpdate로 이동
+//            val intent = Intent(this@BoardDetail2, BoardUpdate::class.java)
+//            startActivity(intent)
+//        }
 
         chattingroom.setOnClickListener {
             // 예: 삭제 버튼을 클릭 시 BoardDelete로 이동
             val boardId = intent.getStringExtra("boardId")
 
             if (boardId != null) {
-                val intent = Intent(this@BoardDetail2, BoardDelete::class.java)
+                val intent = Intent(this@BoardDetail2, ChatDetailActivity::class.java)
                 intent.putExtra("boardId", boardId)
                 startActivity(intent)
             } else {
