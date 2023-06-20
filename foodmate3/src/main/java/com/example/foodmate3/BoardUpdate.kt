@@ -60,7 +60,8 @@ class BoardUpdate : AppCompatActivity() {
         val regUpdate: Button = findViewById(R.id.reg_update)
 
         // Intent로부터 BoardDto 객체를 가져옴
-        boardDto = intent.getSerializableExtra("boardDto") as BoardDto
+        if (intent.hasExtra("boardDto")) {
+            boardDto = intent.getSerializableExtra("boardDto") as BoardDto
 
         // 가져온 정보를 UI에 표시
         binding.boardtitle.setText(boardDto.title)
@@ -69,7 +70,10 @@ class BoardUpdate : AppCompatActivity() {
         binding.appointment.setText(boardDto.meetdate)
         binding.boardid.setText(boardDto.boardid)
         binding.dropBarlist
-        // 필요한 정보들을 각각의 UI 요소에 맞게 표시
+        } else {
+            // Handle the case where the "boardDto" extra is missing or null
+            // You may display an error message or handle it according to your app's logic
+        }
 
         // 업데이트 버튼 클릭 이벤트 처리
         binding.regUpdate.setOnClickListener {
@@ -98,7 +102,7 @@ class BoardUpdate : AppCompatActivity() {
 
         // 식당 리스트 컨트롤러
         dropBarList = findViewById(R.id.drop_barlist)
-        barService = RetrofitBuilder.BarListService()
+        barService = RetrofitBuilder.BarService()
 
         // 보드 레트로핏 연결
         boardService = RetrofitBuilder.BoardService()

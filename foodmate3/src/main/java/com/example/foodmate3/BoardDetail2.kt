@@ -4,12 +4,17 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
+import com.example.foodmate3.Util.MainActivityUtil
 import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.databinding.ActivityBoardDetail2Binding
 import com.example.foodmate3.model.BoardDto
 import com.example.foodmate3.network.RetrofitBuilder
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,6 +23,7 @@ class BoardDetail2 : AppCompatActivity() {
     private val TAG: String = "BoardDetail2"
     private lateinit var binding: ActivityBoardDetail2Binding
     private lateinit var boardService: BoardController
+    private lateinit var menu: Menu
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBoardDetail2Binding.inflate(layoutInflater)
@@ -61,7 +67,30 @@ class BoardDetail2 : AppCompatActivity() {
         } else {
             Log.e("BoardDetail2", "Error: Board ID is null")
         }
+
+        //메인 유틸 코드
+        MainActivityUtil.initViews(this@BoardDetail2)
+        val plusButton = findViewById<ImageButton>(R.id.plus)
+        plusButton.setOnClickListener {
+            MainActivityUtil.showPopupMenu(this, plusButton)
+        }
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        val fragmentManager = supportFragmentManager
+        val mainLayout = findViewById<View>(R.id.mainLayout)
+        MainActivityUtil.setBottomNavigationListener(bottomNavigationView, fragmentManager,mainLayout)
     }
+
+    //메인 유틸 함수 호출
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return MainActivityUtil.onOptionsItemSelected(this, item)
+                || super.onOptionsItemSelected(item)
+    }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        this.menu = menu
+        return MainActivityUtil.onCreateOptionsMenu(this@BoardDetail2, menu)
+    }
+
     private fun getBoardDetail(boardId: String) {
         val boardDetailCall: Call<BoardDto> = boardService.getBoardDetail(boardId)
 

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodmate3.adapter.BoardAdapter
 import com.example.foodmate3.controller.BoardController
-import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.FragmentHomeBinding
 import com.example.foodmate3.model.BoardDto
 import com.example.foodmate3.network.RetrofitBuilder
@@ -24,7 +23,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var boardService: BoardController
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var mainLayout: RecyclerView
     private lateinit var boardAdapter: BoardAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -35,15 +34,14 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        boardService = RetrofitBuilder.BoardListService()
+        boardService = RetrofitBuilder.BoardService()
 
-        recyclerView = binding.recyclerView
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        mainLayout = binding.mainLayout
+        mainLayout.layoutManager = LinearLayoutManager(requireContext())
 
         val boardList: MutableList<BoardDto> = mutableListOf()
         boardAdapter = BoardAdapter(requireContext(), boardList)
-        recyclerView.adapter = boardAdapter
-
+        mainLayout.adapter = boardAdapter
         getBoardList(boardService)
     }
 
@@ -61,7 +59,6 @@ class HomeFragment : Fragment() {
                     Log.e("HomeFragment", "Error: ${response.code()}")
                 }
             }
-
             override fun onFailure(call: Call<List<BoardDto>>, t: Throwable) {
                 if (t is IOException) {
                     Log.e("HomeFragment", "Network Error: ${t.message}")
