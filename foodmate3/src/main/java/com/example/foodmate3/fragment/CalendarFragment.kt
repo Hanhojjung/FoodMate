@@ -43,6 +43,7 @@ class CalendarFragment : Fragment() {
     private lateinit var memoEditText: EditText
     private lateinit var todoAdapter : TodoAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var deleteBtn : ImageButton
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
