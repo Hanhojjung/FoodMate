@@ -18,4 +18,9 @@ interface TodoController {
 
     @GET("/myTodo")
     fun getMyTodo(@Query("userNicname") userNicname: String): Call<List<TodoDto>>
+
+    @GET("/deleteTodo")
+    fun deleteTodo(
+        @Query("todoid") todoid: String
+    ): Call<ResponseBody>
 }

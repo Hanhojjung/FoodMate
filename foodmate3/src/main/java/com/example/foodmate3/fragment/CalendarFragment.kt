@@ -23,6 +23,7 @@ import com.example.foodmate3.adapter.TodoAdapter
 import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.controller.TodoController
+import com.example.foodmate3.databinding.FragmentCalendarBinding
 import com.example.foodmate3.model.BoardDto
 import com.example.foodmate3.model.TodoDto
 import com.example.foodmate3.network.RetrofitBuilder
@@ -37,6 +38,7 @@ import java.io.IOException
 class CalendarFragment : Fragment() {
     private val TAG: String = "TodoInsert"
 
+    private lateinit var binding: FragmentCalendarBinding
     private lateinit var todoService: TodoController
     private lateinit var memoplus: ImageButton
     private lateinit var titleEditText: EditText
@@ -45,9 +47,10 @@ class CalendarFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var deleteBtn : ImageButton
 
-    @SuppressLint("MissingInflatedId")
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_calendar, container, false)
@@ -55,16 +58,50 @@ class CalendarFragment : Fragment() {
         todoService = RetrofitBuilder.TodoService()
 
         // 세션 닉네임 가져오기
-        val sessionNicname = SharedPreferencesUtil.getSessionNickname(requireContext())
+        val sessionNicname = SharedPreferencesUtil.getSessionNickname(requireActivity())
         sessionNicname?.let {
             getBoardList(todoService, it) // 게시물 리스트 가져오기
         }
 
-
-        val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(requireContext())
+        val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(requireActivity())
         Log.d(TAG, "세션 유지 상태: $isLoggedIn")
 
+        val todoId = arguments?.getString("todo")
+
+        if (todoId != null) {
+            deleteTodo(todoId)
+        } else {
+            Log.e("BoardDelete", "Error: Board ID is null")
+        }
+
         return view
+    }
+
+    private fun deleteTodo(todoId: String) {
+        val deleteTodoCall: Call<ResponseBody> = todoService.deleteTodo(todoId)
+
+        deleteTodoCall.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    // Todo deleted successfully
+                    // Handle the response, e.g., display a success message
+                    Log.d("BoardDelete", "Todo deleted successfully")
+
+                    val intent = Intent(requireActivity(), MainActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    Log.e("BoardDelete", "Error: ${response.code()}")
+                    // Handle the error response, e.g., display an error message
+                }
+                requireActivity().finish() // Finish the fragment's parent activity after deletion
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("BoardDelete", "Error: ${t.message}")
+                // Handle the failure, e.g., display an error message
+                requireActivity().finish() // Finish the fragment's parent activity after failure
+            }
+        })
     }
 
 
