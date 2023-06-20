@@ -7,14 +7,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.TimePicker
 import android.widget.Toast
+import com.example.foodmate3.Util.MainActivityUtil
 import com.example.foodmate3.controller.BarController
 import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.controller.SharedPreferencesUtil
@@ -22,6 +27,7 @@ import com.example.foodmate3.databinding.ActivityBoardUpdateBinding
 import com.example.foodmate3.model.BarDto
 import com.example.foodmate3.model.BoardDto
 import com.example.foodmate3.network.RetrofitBuilder
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,6 +49,7 @@ class BoardUpdate : AppCompatActivity() {
     private lateinit var timeFormat: java.text.DateFormat
     private lateinit var txtAppointment: TextView
     private lateinit var btnCalendar: Button
+    private lateinit var menu: Menu
 
     // 식당 리스트
     private lateinit var dropBarList: Spinner
@@ -108,6 +115,26 @@ class BoardUpdate : AppCompatActivity() {
         boardService = RetrofitBuilder.BoardService()
 
         getRestaurantList(barService)
+
+        //메인 유틸 코드
+        MainActivityUtil.initViews(this@BoardUpdate)
+        val plusButton = findViewById<ImageButton>(R.id.plus)
+        plusButton.setOnClickListener {
+            MainActivityUtil.showPopupMenu(this, plusButton)
+        }
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        val fragmentManager = supportFragmentManager
+        val mainLayout = findViewById<View>(R.id.mainLayout)
+        MainActivityUtil.setBottomNavigationListener(bottomNavigationView, fragmentManager,mainLayout)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return MainActivityUtil.onOptionsItemSelected(this, item)
+                || super.onOptionsItemSelected(item)
+    }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        this.menu = menu
+        return MainActivityUtil.onCreateOptionsMenu(this@BoardUpdate, menu)
     }
 
     // 식당 이름 리스트 불러오기

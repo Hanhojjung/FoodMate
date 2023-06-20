@@ -2,21 +2,24 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:padding="16dp"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <ScrollView
+    <include
+        layout="@layout/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="508dp"
-        android:layout_weight="1"
-        android:fillViewport="true">
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/mainLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_height="514dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -174,6 +177,14 @@
             </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
+
+    </FrameLayout>
+
+
+
+    <include
+        layout="@layout/btm_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

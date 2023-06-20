@@ -22,25 +22,6 @@ interface BoardController {
     fun getBoardDetail(
         @Query("boardid") id: String): Call<BoardDto>
 
-//    @POST("/updateBoard/{boardId}")
-//    fun updateBoard(
-//        @Path("boardId") boardId: String,
-//        @Query("writer") writer: String,
-//        @Query("title") title: String,
-//        @Query("content") content: String,
-//        @Query("bar_name") barName: String,
-//        @Query("user_count") userCount: String,
-//        @Query("user_meetdate") userMeetDate: String
-//    )
-
-
-//    @POST("/updateBoard")
-//    fun updateBoard(
-//        @Query("boardid") boardId: String, // 수정된 부분: boardid를 boardId로 변경
-//        @Body board: BoardDto // 수정된 부분: @Query 어노테이션 대신 @Body 어노테이션 사용
-//    )
-
-
     @GET("/myBoard")
     fun getMyBoard(@Query("userNicname") userNicname: String): Call<List<BoardDto>>
 
@@ -54,8 +35,4 @@ interface BoardController {
         @Query("boardid") boardId: String,
         @Body board: BoardDto
     ): Call<ResponseBody>
-
-
-
-
 }

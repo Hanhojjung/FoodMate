@@ -3,16 +3,10 @@ package com.example.foodmate3
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import com.example.foodmate3.Util.MainActivityUtil
 import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.databinding.ActivityBoardDeleteBinding
 import com.example.foodmate3.network.RetrofitBuilder
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,7 +16,7 @@ class BoardDelete : AppCompatActivity() {
 
     private lateinit var binding: ActivityBoardDeleteBinding
     private lateinit var boardService: BoardController
-    private lateinit var menu: Menu
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,25 +32,6 @@ class BoardDelete : AppCompatActivity() {
         } else {
             Log.e("BoardDelete", "Error: Board ID is null")
         }
-        //메인 유틸 코드
-        MainActivityUtil.initViews(this@BoardDelete)
-        val plusButton = findViewById<ImageButton>(R.id.plus)
-        plusButton.setOnClickListener {
-            MainActivityUtil.showPopupMenu(this, plusButton)
-        }
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        val fragmentManager = supportFragmentManager
-        val mainLayout = findViewById<View>(R.id.mainLayout)
-        MainActivityUtil.setBottomNavigationListener(bottomNavigationView, fragmentManager,mainLayout)
-    }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return MainActivityUtil.onOptionsItemSelected(this, item)
-                || super.onOptionsItemSelected(item)
-    }
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        this.menu = menu
-        return MainActivityUtil.onCreateOptionsMenu(this@BoardDelete, menu)
     }
 
     private fun deleteBoard(boardId: String) {
