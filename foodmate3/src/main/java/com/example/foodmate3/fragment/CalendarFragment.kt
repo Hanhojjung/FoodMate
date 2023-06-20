@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -52,8 +53,19 @@ class CalendarFragment : Fragment() {
         memoplus = view.findViewById<ImageButton>(R.id.memoplus)
         todoService = RetrofitBuilder.TodoService()
 
+        // 세션 닉네임 가져오기
+        val sessionNicname = SharedPreferencesUtil.getSessionNickname(requireContext())
+        sessionNicname?.let {
+            getBoardList(todoService, it) // 게시물 리스트 가져오기
+        }
+
+
+        val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(requireContext())
+        Log.d(TAG, "세션 유지 상태: $isLoggedIn")
+
         return view
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -65,35 +77,37 @@ class CalendarFragment : Fragment() {
         todoAdapter = TodoAdapter(requireContext(), todoList)
         recyclerView.adapter = todoAdapter
 
-        getBoardList(todoService)
-
         memoplus.setOnClickListener {
             showMemoDialog()
         }
     }
 
-    private fun getBoardList(todoService: TodoController) {
-        val boardListCall: Call<List<TodoDto>> = todoService.getAllTodo()
+
+    private fun getBoardList(todoService: TodoController, sessionNicname: String) {
+        val boardListCall: Call<List<TodoDto>> = todoService.getMyTodo(sessionNicname)
 
         boardListCall.enqueue(object : Callback<List<TodoDto>> {
             override fun onResponse(call: Call<List<TodoDto>>, response: Response<List<TodoDto>>) {
                 if (response.isSuccessful) {
                     val boardListResponse = response.body()
-                    boardListResponse?.let {
-                        todoAdapter.setData(it)
+                    Log.d("lsy", "test: " + boardListResponse)
+                    boardListResponse?.let { boardList ->
+                        // 세션 닉네임과 동일한 닉네임으로 작성된 게시물 필터링
+                        val filteredList = boardList.filter { it.userNicname == sessionNicname }
+                        todoAdapter.setData(filteredList)
                     }
                 } else {
-                    Log.e("TodoFragment", "Error: ${response.code()}")
+                    Log.e("TodoBoardList", "Error: ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<List<TodoDto>>, t: Throwable) {
                 if (t is IOException) {
-                    Log.e("TodoFragment", "Network Error: ${t.message}")
+                    Log.e("TodoList", "Network Error: ${t.message}")
                 } else if (t is HttpException) {
-                    Log.e("TodoFragment", "HTTP Error: ${t.code()}")
+                    Log.e("TodoList", "HTTP Error: ${t.code()}")
                 } else {
-                    Log.e("TodoFragment", "Error: ${t.message}")
+                    Log.e("TodoList", "Error: ${t.message}")
                 }
             }
         })
@@ -118,13 +132,13 @@ class CalendarFragment : Fragment() {
 
 
     private fun sendBoardData() {
-        val userNickname = SharedPreferencesUtil.getSessionNickname(requireContext()) ?: ""
+        val userNicname = SharedPreferencesUtil.getSessionNickname(requireContext()) ?: ""
         val title = titleEditText.text.toString()
         val memo = memoEditText.text.toString()
         val todo = TodoDto(
             title,
             "",
-            userNickname,
+            userNicname,
             memo
         )
 

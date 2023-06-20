@@ -6,6 +6,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface TodoController {
 
@@ -14,4 +15,7 @@ interface TodoController {
 
     @GET("/todoList")
     fun getAllTodo(): Call<List<TodoDto>>
+
+    @GET("/myTodo")
+    fun getMyTodo(@Query("userNicname") userNicname: String): Call<List<TodoDto>>
 }
