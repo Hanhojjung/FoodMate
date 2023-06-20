@@ -23,7 +23,7 @@ class BoardDetail2 : AppCompatActivity() {
         binding = ActivityBoardDetail2Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        boardService = RetrofitBuilder.BoardListService()
+        boardService = RetrofitBuilder.BoardService()
 
         val regList: Button = findViewById(R.id.reg_list)
         val heart : Button = findViewById(R.id.button_favorite)

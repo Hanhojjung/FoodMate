@@ -23,7 +23,7 @@ object RetrofitBuilder {
 
         return retrofit.create(MemberController::class.java)
     }
-    fun BarListService(): BarController {
+    fun BarService(): BarController {
         val gson = GsonBuilder()
             .setLenient()
             .create()
@@ -35,19 +35,6 @@ object RetrofitBuilder {
         return retrofit.create(BarController::class.java)
     }
     fun BoardService(): BoardController {
-        val gson = GsonBuilder()
-            .setLenient()
-            .create()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-
-        return retrofit.create(BoardController::class.java)
-    }
-
-    fun BoardListService(): BoardController {
         val gson = GsonBuilder()
             .setLenient()
             .create()
@@ -70,6 +57,4 @@ object RetrofitBuilder {
 
         return retrofit.create(TodoController::class.java)
     }
-
-
 }

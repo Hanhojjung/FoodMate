@@ -2,15 +2,20 @@ package com.example.foodmate3
 
 import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import com.example.foodmate3.Util.MainActivityUtil
 import com.example.foodmate3.controller.MemberController
-import com.example.foodmate3.controller.PasswordHashUtil
 import com.example.foodmate3.databinding.ActivityJoinBinding
 import com.example.foodmate3.network.RetrofitBuilder
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -21,11 +26,23 @@ class JoinActivity : AppCompatActivity() {
     private val TAG: String = "JoinActivity"
     private lateinit var binding: ActivityJoinBinding
     private lateinit var apiService: MemberController
+    private lateinit var menu: Menu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityJoinBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //메인 유틸 코드
+        val plusButton = findViewById<ImageButton>(R.id.plus)
+        plusButton.setOnClickListener {
+            MainActivityUtil.showPopupMenu(this, plusButton)
+        }
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        val fragmentManager = supportFragmentManager
+        val mainLayout = findViewById<View>(R.id.mainLayout)
+        MainActivityUtil.setBottomNavigationListener(bottomNavigationView, fragmentManager,mainLayout)
 
         apiService = RetrofitBuilder.MemberService()
 
@@ -57,9 +74,17 @@ class JoinActivity : AppCompatActivity() {
 
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return MainActivityUtil.onOptionsItemSelected(this, item)
+                || super.onOptionsItemSelected(item)
+    }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        this.menu = menu
+        return MainActivityUtil.onCreateOptionsMenu(this@JoinActivity, menu)
+    }
+
     private fun insertMember(id: String, pw: String, nickname: String) {
-        val hashedPw = PasswordHashUtil.hashPassword(pw) // 비밀번호를 해시하여 암호화
-        val call: Call<ResponseBody> = apiService.insertMember(id, hashedPw, nickname)
+        val call: Call<ResponseBody> = apiService.insertMember(id, pw, nickname)
 
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

@@ -22,7 +22,7 @@ class BoardDelete : AppCompatActivity() {
         binding = ActivityBoardDeleteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        boardService = RetrofitBuilder.BoardListService()
+        boardService = RetrofitBuilder.BoardService()
 
         val boardId = intent.getStringExtra("boardId")
 

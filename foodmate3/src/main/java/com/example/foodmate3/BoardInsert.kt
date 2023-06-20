@@ -6,20 +6,26 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.TimePicker
 import android.widget.Toast
+import com.example.foodmate3.Util.MainActivityUtil
 import com.example.foodmate3.controller.BarController
 import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.model.BarDto
 import com.example.foodmate3.model.BoardDto
 import com.example.foodmate3.network.RetrofitBuilder
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,6 +49,8 @@ class BoardInsert : AppCompatActivity() {
     private lateinit var dateFormat: DateFormat
     private lateinit var timeFormat: DateFormat
 
+    private lateinit var menu: Menu
+
     //식당 리스트
     private lateinit var dropBarList: Spinner
     private lateinit var barService: BarController
@@ -60,7 +68,7 @@ class BoardInsert : AppCompatActivity() {
 
         //식당 리스트 컨트롤러
         dropBarList = findViewById(R.id.drop_barlist)
-        barService = RetrofitBuilder.BarListService()
+        barService = RetrofitBuilder.BarService()
 
         //보드 레트로핏 연결
         boardService = RetrofitBuilder.BoardService()
@@ -89,6 +97,27 @@ class BoardInsert : AppCompatActivity() {
             showDatePicker()
 
         }
+        //메인 유틸 코드
+        MainActivityUtil.initViews(this@BoardInsert)
+        val plusButton = findViewById<ImageButton>(R.id.plus)
+        plusButton.setOnClickListener {
+            MainActivityUtil.showPopupMenu(this@BoardInsert, plusButton)
+        }
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        val fragmentManager = supportFragmentManager
+        val mainLayout = findViewById<View>(R.id.mainLayout)
+        MainActivityUtil.setBottomNavigationListener(bottomNavigationView, fragmentManager,mainLayout)
+    }
+
+    //메인 유틸 함수 호출
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return MainActivityUtil.onOptionsItemSelected(this@BoardInsert, item)
+                || super.onOptionsItemSelected(item)
+    }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        this.menu = menu
+        return MainActivityUtil.onCreateOptionsMenu(this@BoardInsert, menu)
     }
 
     //식당이름 리스트 불러오기
@@ -124,7 +153,6 @@ class BoardInsert : AppCompatActivity() {
             }
         })
     }
-
     private fun getSelectedBarImageUrl(barName: String): String {
         val selectedBar = barListResponse.firstOrNull { it.main_TITLE == barName }
         return selectedBar?.main_IMG_NORMAL ?: ""
@@ -178,25 +206,12 @@ class BoardInsert : AppCompatActivity() {
         val barName = dropBarList.selectedItem.toString() // 선택된 식당 이름
         val barImg = getSelectedBarImageUrl(barName) // 해당 식당 이미지 URL 가져오기
         val memberCount = findViewById<EditText>(R.id.partyone).text.toString()
-        val meetdate =
-            dateFormat.format(calendar.time).toString() + " " + timeFormat.format(calendar.time)
-                .toString() // 만남 날짜와 시간
-        val regdate =
-            SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()) // 등록 날짜
+        val meetdate = dateFormat.format(calendar.time).toString() + " " + timeFormat.format(calendar.time).toString() // 만남 날짜와 시간
+        val regdate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()) // 등록 날짜
 
         boardService = RetrofitBuilder.BoardService()
 
-        val board = BoardDto(
-            "",
-            userNicname,
-            title,
-            content,
-            barName,
-            barImg,
-            memberCount,
-            meetdate,
-            regdate
-        )
+        val board = BoardDto("", userNicname, title, content, barName, barImg, memberCount, meetdate, regdate)
 
         val call = boardService.insertBoard(board)
 
@@ -205,9 +220,6 @@ class BoardInsert : AppCompatActivity() {
                 if (response.isSuccessful) {
                     Toast.makeText(applicationContext, "게시글이 등록되었습니다.", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "응답 코드: ${response.code()}")
-
-                    val intent = Intent(this@BoardInsert, MainActivity::class.java)
-                    startActivity(intent)
                 } else {
                     // 전송 실패한 경우의 처리
                     Toast.makeText(applicationContext, "게시글 등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
