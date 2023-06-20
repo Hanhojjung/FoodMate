@@ -3,6 +3,7 @@ package com.example.foodmate3.network
 import com.example.foodmate3.controller.BarController
 import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.controller.MemberController
+import com.example.foodmate3.controller.TodoController
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -57,7 +58,7 @@ object RetrofitBuilder {
         return retrofit.create(BoardController::class.java)
     }
 
-    fun BoardMyService() : BoardController{
+    fun TodoService(): TodoController {
         val gson = GsonBuilder()
             .setLenient()
             .create()
@@ -67,7 +68,7 @@ object RetrofitBuilder {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
-        return retrofit.create(BoardController::class.java)
+        return retrofit.create(TodoController::class.java)
     }
 
 
