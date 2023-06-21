@@ -2,49 +2,42 @@ package com.example.foodmate3
 
 import android.content.DialogInterface
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import com.example.foodmate3.Util.MainActivityUtil
 import com.example.foodmate3.controller.MemberController
+import com.example.foodmate3.controller.PasswordHashUtil
 import com.example.foodmate3.databinding.ActivityJoinBinding
+import com.example.foodmate3.network.ImageUtil
 import com.example.foodmate3.network.RetrofitBuilder
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
 
 class JoinActivity : AppCompatActivity() {
 
     private val TAG: String = "JoinActivity"
     private lateinit var binding: ActivityJoinBinding
     private lateinit var apiService: MemberController
-    private lateinit var menu: Menu
+    private var selectedImageView: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityJoinBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //메인 유틸 코드
-        val plusButton = findViewById<ImageButton>(R.id.plus)
-        plusButton.setOnClickListener {
-            MainActivityUtil.showPopupMenu(this, plusButton)
-        }
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        val fragmentManager = supportFragmentManager
-        val mainLayout = findViewById<View>(R.id.mainLayout)
-        MainActivityUtil.setBottomNavigationListener(bottomNavigationView, fragmentManager,mainLayout)
-
         apiService = RetrofitBuilder.MemberService()
+
+        binding.img1.setOnClickListener { selectImageView(binding.img1) }
+        binding.img2.setOnClickListener { selectImageView(binding.img2) }
+        binding.img3.setOnClickListener { selectImageView(binding.img3) }
+        binding.img4.setOnClickListener { selectImageView(binding.img4) }
 
         binding.btnRegister.setOnClickListener {
             val id = binding.editId.text.toString()
@@ -52,40 +45,39 @@ class JoinActivity : AppCompatActivity() {
             val pwRe = binding.editPwRe.text.toString()
             val nickname = binding.editNickname.text.toString()
 
-            // 유저가 항목을 다 채우지 않았을 경우
+            // 사용자가 필수 입력 사항을 모두 입력하지 않은 경우
             if (id.isEmpty() || pw.isEmpty() || nickname.isEmpty()) {
                 showDialog("blank")
                 return@setOnClickListener
             }
 
-            // 비밀번호가 일치하지 않을 경우
+            // 비밀번호가 일치하지 않는 경우
             if (pw != pwRe) {
                 showDialog("not same")
                 return@setOnClickListener
             }
 
             // 회원가입 API 호출
-            insertMember(id, pw, nickname)
+            val selectedImageResource = selectedImageView?.id?.let { getSelectedImageResource(it) }
+            if (selectedImageResource != null) {
+                val imageFile = getFileFromResource(selectedImageResource)
+                val encodedImage = ImageUtil.encodeImageToBase64(imageFile)
+                insertMember(id, pw, nickname, encodedImage)
+            } else {
+                // 이미지가 선택되지 않은 경우
+                Toast.makeText(this, "이미지를 선택해주세요.", Toast.LENGTH_SHORT).show()
+            }
 
-            // 회원가입 버튼 클릭 시 MainActivity3 이동
-            val intent = Intent(applicationContext, LoginActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            finish()
         }
-
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return MainActivityUtil.onOptionsItemSelected(this, item)
-                || super.onOptionsItemSelected(item)
-    }
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        this.menu = menu
-        return MainActivityUtil.onCreateOptionsMenu(this@JoinActivity, menu)
-    }
+    private fun insertMember(id: String, pw: String, nickname: String, encodedImage: String) {
+        val hashedPw = PasswordHashUtil.hashPassword(pw) // 비밀번호를 해시하여 암호화
 
-    private fun insertMember(id: String, pw: String, nickname: String) {
-        val call: Call<ResponseBody> = apiService.insertMember(id, pw, nickname)
-
+        val call: Call<ResponseBody> = apiService.insertMember(id, hashedPw, nickname, encodedImage)
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
@@ -112,9 +104,14 @@ class JoinActivity : AppCompatActivity() {
                 Log.e(TAG, "통신 실패: ${t.message}")
             }
         })
+
+        Log.d(TAG, "이미지: $encodedImage")
+        Log.d(TAG, "아이디: $id")
+        Log.d(TAG, "비밀번호: $pw")
+        Log.d(TAG, "닉네임: $nickname")
     }
 
-    // 회원가입 성공/실패 시 다이얼로그를 띄워주는 메소드
+
     private fun showDialog(message: String) {
         val dialogBuilder = AlertDialog.Builder(this@JoinActivity)
 
@@ -126,9 +123,7 @@ class JoinActivity : AppCompatActivity() {
                 DialogInterface.BUTTON_POSITIVE -> {
                     Log.d(TAG, "확인 버튼 클릭")
                     if (message == "회원가입 성공") {
-                        val intent = Intent(this, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
+
                     }
                 }
             }
@@ -138,18 +133,45 @@ class JoinActivity : AppCompatActivity() {
         dialogBuilder.show()
     }
 
-    // 가입 시 토스트
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 101) {
-            if (data != null) {
-                val name = data.getStringExtra("name")
-                val toast = Toast.makeText(
-                    baseContext,
-                    "result code : $resultCode, $name", Toast.LENGTH_LONG
-                )
-                toast.show()
-            }
+    private fun selectImageView(imageView: ImageView) {
+        selectedImageView?.isSelected = false
+        selectedImageView?.scaleX = 1.0f
+        selectedImageView?.scaleY = 1.0f
+
+        imageView.isSelected = true
+        imageView.scaleX = 1.2f
+        imageView.scaleY = 1.2f
+
+        selectedImageView = imageView
+    }
+
+
+    private fun getSelectedImageResource(selectedImageId: Int): Int? {
+        return when (selectedImageId) {
+            R.id.img1 -> R.drawable.ch1
+            R.id.img2 -> R.drawable.ch2
+            R.id.img3 -> R.drawable.ch3
+            R.id.img4 -> R.drawable.ch4
+            else -> null
         }
     }
+
+    private fun getFileFromResource(resourceId: Int): File {
+        val res = resources.getResourceName(resourceId)
+        val resName = res.substringAfterLast('/')
+        val fileName = "${externalCacheDir?.absolutePath}/$resName"
+        val file = File(fileName)
+        val inputStream = resources.openRawResource(resourceId)
+        val outputStream = FileOutputStream(file)
+        val buffer = ByteArray(1024)
+        var read: Int
+        while (inputStream.read(buffer).also { read = it } != -1) {
+            outputStream.write(buffer, 0, read)
+        }
+        inputStream.close()
+        outputStream.flush()
+        outputStream.close()
+        return file
+    }
+
 }

@@ -5,7 +5,8 @@ data class LoginResponse(
     val message: String,
     val sessionId: String,
     val sessionPw: String,
-    val sessionNickname: String
+    val sessionNickname: String,
+    val sessionImage: String
 )
 
 data class RegisterResponse(val status: String, val message: String)

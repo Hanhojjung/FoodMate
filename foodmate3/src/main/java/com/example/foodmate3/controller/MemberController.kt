@@ -5,6 +5,8 @@ import com.example.foodmate3.model.MemberDto
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -17,14 +19,21 @@ interface MemberController {
     fun insertMember(
         @Query("id") id: String,
         @Query("pw") pw: String,
-        @Query("nickname") nickname: String
+        @Query("nickname") nickname: String,
+        @Query("encodedImage") encodedImage: String
     ): Call<ResponseBody>
 
     @GET("/getMemberDetail")
     fun getMemberDetail(@Query("id") id: String): Call<MemberDto>
 
+    @FormUrlEncoded
     @POST("/updateMember")
-    fun updateMember(@Body member: MemberDto): Call<String>
+    fun updateMember(
+        @Field("id") id: String,
+        @Field("pw") pw: String,
+        @Field("nickname") nickname: String,
+        @Field("encodedImage") encodedImage: String
+    ): Call<ResponseBody>
 
     @GET("/deleteMember")
     fun deleteMember(@Query("id") id: String): Call<String>
@@ -33,5 +42,6 @@ interface MemberController {
     fun login(
         @Body member: MemberDto
     ): Call<LoginResponse>
+
 
 }

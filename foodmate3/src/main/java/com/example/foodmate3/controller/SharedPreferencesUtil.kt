@@ -2,6 +2,12 @@ package com.example.foodmate3.controller
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import android.util.Log
+import com.example.foodmate3.network.ImageUtil
+import java.io.IOException
 
 object SharedPreferencesUtil {
     private const val PREF_NAME = "SessionPrefs"
@@ -9,6 +15,7 @@ object SharedPreferencesUtil {
     private const val KEY_SESSION_PW = "sessionPw"
     private const val KEY_SESSION_NICKNAME = "sessionNickname"
     private const val KEY_LOGGED_IN = "isLoggedIn"
+    private const val SESSION_IMAGE = "session_image"
 
     private fun getSharedPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -53,22 +60,18 @@ object SharedPreferencesUtil {
         return sharedPreferences.getBoolean(KEY_LOGGED_IN, false)
     }
 
-    fun updateSession(context: Context, id: String, password: String, nickname: String) {
-        val sharedPreferences = getSharedPreferences(context)
-        val editor = sharedPreferences.edit()
-        editor.putString(KEY_SESSION_ID, id)
-        editor.putString(KEY_SESSION_PW, password)
-        editor.putString(KEY_SESSION_NICKNAME, nickname)
-        editor.apply()
+    fun updateSession(context: Context, id: String, password: String, nickname: String, bitmap: Bitmap) {
+        saveSession(context, id, password, nickname)
+        saveImage(context, bitmap)
     }
 
-
-    fun reloadSession(context: Context, sessionId: String, sessionPw: String, sessionNickname: String?) {
+    fun reloadSession(context: Context, sessionId: String, sessionPw: String, sessionNickname: String?, bitmap: Bitmap) {
         val sharedPreferences = getSharedPreferences(context)
         val loadedSessionId = sharedPreferences.getString(KEY_SESSION_ID, null)
 
         if (loadedSessionId == sessionId) {
             saveSession(context, sessionId, sessionPw, sessionNickname)
+            saveImage(context, bitmap)
         }
     }
 
@@ -99,6 +102,32 @@ object SharedPreferencesUtil {
         }
     }
 
+    fun saveImage(context: Context, bitmap: Bitmap) {
+        try {
+            val encodedImage = ImageUtil.encodeBitmapToBase64(bitmap)
+            val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
 
+            editor.putString(SESSION_IMAGE, encodedImage)
+            editor.apply()
+        } catch (e: IOException) {
+            Log.e("SharedPreferencesUtil", "Failed to save image: ${e.message}")
+        }
+    }
 
+    fun getImage(context: Context): Bitmap? {
+        try {
+            val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+            val encodedImage = sharedPreferences.getString(SESSION_IMAGE, null)
+            if (encodedImage != null) {
+                val byteArray = Base64.decode(encodedImage, Base64.DEFAULT)
+                return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+            }
+        } catch (e: ClassCastException) {
+            Log.e("SharedPreferencesUtil", "Failed to load image: ${e.message}")
+        } catch (e: IOException) {
+            Log.e("SharedPreferencesUtil", "Failed to load image: ${e.message}")
+        }
+        return null
+    }
 }

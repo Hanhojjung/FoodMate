@@ -5,21 +5,16 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
-import com.example.foodmate3.Util.MainActivityUtil
 import com.example.foodmate3.controller.MemberController
 import com.example.foodmate3.controller.PasswordHashUtil
 import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.ActivityLoginBinding
 import com.example.foodmate3.model.LoginResponse
 import com.example.foodmate3.model.MemberDto
+import com.example.foodmate3.network.ImageUtil
 import com.example.foodmate3.network.RetrofitBuilder
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,23 +24,11 @@ class LoginActivity : AppCompatActivity() {
     private val TAG: String = "LoginActivity"
     private lateinit var binding: ActivityLoginBinding
     private lateinit var apiService: MemberController
-    private lateinit var menu: Menu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        //메인 유틸 코드
-        val plusButton = findViewById<ImageButton>(R.id.plus)
-        plusButton.setOnClickListener {
-            MainActivityUtil.showPopupMenu(this, plusButton)
-        }
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        val fragmentManager = supportFragmentManager
-        val mainLayout = findViewById<View>(R.id.mainLayout)
-        MainActivityUtil.setBottomNavigationListener(bottomNavigationView, fragmentManager,mainLayout)
 
         apiService = RetrofitBuilder.MemberService()
 
@@ -74,17 +57,10 @@ class LoginActivity : AppCompatActivity() {
             startActivityForResult(intent, 101)
         }
     }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return MainActivityUtil.onOptionsItemSelected(this, item)
-                || super.onOptionsItemSelected(item)
-    }
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        this.menu = menu
-        return MainActivityUtil.onCreateOptionsMenu(this@LoginActivity, menu)
-    }
 
     private fun login(id: String, pw: String, nickname: String) {
-        val member = MemberDto(id, pw, nickname)
+        val hashedPw = PasswordHashUtil.hashPassword(pw) // 비밀번호를 해싱합니다.
+        val member = MemberDto(id, hashedPw, nickname)
         val call = apiService.login(member)
         Log.d(TAG, "로그인 요청 - ID: $id, PW: $pw")
         call.enqueue(object : Callback<LoginResponse> {
@@ -99,6 +75,13 @@ class LoginActivity : AppCompatActivity() {
                         val sessionId = loginResponse.sessionId
                         val sessionPw = loginResponse.sessionPw
                         val sessionNickname = loginResponse.sessionNickname
+
+                        // 디코딩된 이미지를 가져와 세션에 저장
+                        val encodedImage = loginResponse.sessionImage
+                        val decodedImage = ImageUtil.decodeBase64ToBitmap(encodedImage)
+                        if (decodedImage != null) {
+                            SharedPreferencesUtil.saveImage(this@LoginActivity, decodedImage)
+                        }
 
                         // 추가: 닉네임 정보를 가져오는 API 호출 및 세션 저장
                         getNicknameAndSaveSession(sessionId, sessionPw, sessionNickname)
@@ -125,7 +108,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun getNicknameAndSaveSession(sessionId: String, sessionPw: String, sessionNickname: String) {
-        // Modify this part to retrieve the nickname using Retrofit and store the session
         apiService.getMemberDetail(sessionId).enqueue(object : Callback<MemberDto> { // Assuming getMemberDetail API returns Member
             override fun onResponse(call: Call<MemberDto>, response: Response<MemberDto>) {
                 if (response.isSuccessful) {

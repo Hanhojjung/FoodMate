@@ -20,7 +20,6 @@ import com.example.foodmate3.databinding.FragmentMyBinding
 class MyFragment : Fragment() {
     private var _binding: FragmentMyBinding? = null
     private val binding get() = _binding!!
-    private lateinit var filePath: String
     private lateinit var nicknameTextView: TextView
 
     override fun onCreateView(
@@ -31,39 +30,15 @@ class MyFragment : Fragment() {
         val view = binding.root
         nicknameTextView = binding.nickname
 
+        // 세션에서 이미지 가져오기
+        val sessionImage = SharedPreferencesUtil.getImage(requireContext())
+        if (sessionImage != null) {
+            binding.profileimg.setImageBitmap(sessionImage) // 세션에 저장된 이미지 설정
+        }
+
         val sessionNickname = SharedPreferencesUtil.getSessionNickname(requireContext())
         Log.d("MyFragment", "$sessionNickname")
         setSessionNickname(sessionNickname)
-
-
-        val requestGalleryLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-                try {
-                    val calRatio = calculateInSampleSize(
-                        data!!.data!!,
-                        resources.getDimensionPixelSize(R.dimen.imgSize),
-                        resources.getDimensionPixelSize(R.dimen.imgSize)
-                    )
-                    val option = BitmapFactory.Options()
-                    option.inSampleSize = calRatio
-
-                    val inputStream = requireContext().contentResolver.openInputStream(data.data!!)
-                    val bitmap = BitmapFactory.decodeStream(inputStream, null, option)
-                    inputStream?.close()
-
-                    bitmap?.let {
-                        binding.profileimg.setImageBitmap(bitmap)
-                    } ?: run {
-                        Log.d("kkang", "bitmap null")
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
 
         binding.profile.setOnClickListener {
             val intent = Intent(requireContext(), UpdateActivity::class.java)
