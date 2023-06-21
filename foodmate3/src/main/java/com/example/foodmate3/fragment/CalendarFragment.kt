@@ -41,8 +41,6 @@ class CalendarFragment : Fragment() {
     private lateinit var memoEditText: EditText
     private lateinit var todoAdapter : TodoAdapter
     private lateinit var recyclerView: RecyclerView
-    private lateinit var todoDelete: ImageButton
-
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -52,7 +50,6 @@ class CalendarFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_calendar, container, false)
         memoplus = view.findViewById<ImageButton>(R.id.memoplus)
-        todoDelete = view.findViewById<ImageButton>(R.id.todo_delete)
         todoService = RetrofitBuilder.TodoService()
         binding = ItemListBinding.inflate(layoutInflater)
         // 세션 닉네임 가져오기
@@ -64,53 +61,10 @@ class CalendarFragment : Fragment() {
         val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(requireActivity())
         Log.d(TAG, "세션 유지 상태: $isLoggedIn")
 
-        val todoId = arguments?.getString("todoId")
-
-        if (todoId != null) {
-            deleteTodo(todoId)
-        } else {
-            Log.e("TodoDelete", "Error: Todo ID is null")
-        }
-
-        todoDelete.setOnClickListener {
-            val todoId = arguments?.getString("todo")
-
-            if (todoId != null) {
-                deleteTodo(todoId)
-            } else {
-                Log.e("TodoDelete", "Error: Todo ID is null")
-            }
-        }
 
         return view
     }
 
-    private fun deleteTodo(todoId: String) {
-        val deleteTodoCall: Call<ResponseBody> = todoService.deleteTodo(todoId)
-
-        deleteTodoCall.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    // Todo deleted successfully
-                    // Handle the response, e.g., display a success message
-                    Log.d("TodoDelete", "Todo deleted successfully")
-
-                    val intent = Intent(requireActivity(), MainActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    Log.e("TodoDelete", "Error: ${response.code()}")
-                    // Handle the error response, e.g., display an error message
-                }
-                requireActivity().finish() // Finish the fragment's parent activity after deletion
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e("TodoDelete", "Error: ${t.message}")
-                // Handle the failure, e.g., display an error message
-                requireActivity().finish() // Finish the fragment's parent activity after failure
-            }
-        })
-    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -167,11 +121,18 @@ class CalendarFragment : Fragment() {
         titleEditText = dialog.findViewById(R.id.titleEditText)
         memoEditText = dialog.findViewById(R.id.memoEditText)
         val saveButton = dialog.findViewById<Button>(R.id.saveButton)
+        val memoCancel = dialog.findViewById<Button>(R.id.memoCancel)
 
         saveButton.setOnClickListener {
             dialog.dismiss()
             sendBoardData()
+            val intent = Intent(requireContext(), CalendarFragment::class.java)
         }
+
+        memoCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
 
         dialog.show()
     }

@@ -6,5 +6,4 @@ class TodoDto (
     val userNicname : String,
     val memo : String
 
-
     )
