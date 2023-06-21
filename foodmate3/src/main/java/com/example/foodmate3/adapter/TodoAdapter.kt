@@ -4,6 +4,7 @@ import android.content.Context
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.AdapterView.OnItemClickListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.databinding.ItemListBinding
@@ -15,10 +16,20 @@ class TodoViewHolder(val binding: ItemListBinding) : RecyclerView.ViewHolder(bin
 class TodoAdapter(private val context: Context, private val todoList: MutableList<TodoDto>) :
     RecyclerView.Adapter<TodoViewHolder>() {
     private val sessionNickname = SharedPreferencesUtil.getSessionNickname(context)
+    private var onItemClickListener: OnItemClickListener? = null
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.onItemClickListener = listener
+    }
+
+    interface OnItemClickListener {
+        fun onDeleteClick(todoId: String)
+    }
 
     override fun getItemCount(): Int {
         return todoList.size
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):TodoViewHolder {
         val binding = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)

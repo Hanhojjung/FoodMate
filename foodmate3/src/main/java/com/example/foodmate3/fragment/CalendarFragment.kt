@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,13 +17,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodmate3.MainActivity
 import com.example.foodmate3.R
-import com.example.foodmate3.adapter.BoardAdapter
 import com.example.foodmate3.adapter.TodoAdapter
-import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.controller.SharedPreferencesUtil
 import com.example.foodmate3.controller.TodoController
-import com.example.foodmate3.databinding.FragmentCalendarBinding
-import com.example.foodmate3.model.BoardDto
+import com.example.foodmate3.databinding.ItemListBinding
 import com.example.foodmate3.model.TodoDto
 import com.example.foodmate3.network.RetrofitBuilder
 import okhttp3.ResponseBody
@@ -38,16 +34,17 @@ import java.io.IOException
 class CalendarFragment : Fragment() {
     private val TAG: String = "TodoInsert"
 
-    private lateinit var binding: FragmentCalendarBinding
+    private lateinit var binding: ItemListBinding
     private lateinit var todoService: TodoController
     private lateinit var memoplus: ImageButton
     private lateinit var titleEditText: EditText
     private lateinit var memoEditText: EditText
     private lateinit var todoAdapter : TodoAdapter
     private lateinit var recyclerView: RecyclerView
-    private lateinit var deleteBtn : ImageButton
+    private lateinit var todoDelete: ImageButton
 
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,8 +52,9 @@ class CalendarFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_calendar, container, false)
         memoplus = view.findViewById<ImageButton>(R.id.memoplus)
+        todoDelete = view.findViewById<ImageButton>(R.id.todo_delete)
         todoService = RetrofitBuilder.TodoService()
-
+        binding = ItemListBinding.inflate(layoutInflater)
         // 세션 닉네임 가져오기
         val sessionNicname = SharedPreferencesUtil.getSessionNickname(requireActivity())
         sessionNicname?.let {
@@ -66,12 +64,22 @@ class CalendarFragment : Fragment() {
         val isLoggedIn = SharedPreferencesUtil.checkLoggedIn(requireActivity())
         Log.d(TAG, "세션 유지 상태: $isLoggedIn")
 
-        val todoId = arguments?.getString("todo")
+        val todoId = arguments?.getString("todoId")
 
         if (todoId != null) {
             deleteTodo(todoId)
         } else {
-            Log.e("BoardDelete", "Error: Board ID is null")
+            Log.e("TodoDelete", "Error: Todo ID is null")
+        }
+
+        todoDelete.setOnClickListener {
+            val todoId = arguments?.getString("todo")
+
+            if (todoId != null) {
+                deleteTodo(todoId)
+            } else {
+                Log.e("TodoDelete", "Error: Todo ID is null")
+            }
         }
 
         return view
@@ -85,19 +93,19 @@ class CalendarFragment : Fragment() {
                 if (response.isSuccessful) {
                     // Todo deleted successfully
                     // Handle the response, e.g., display a success message
-                    Log.d("BoardDelete", "Todo deleted successfully")
+                    Log.d("TodoDelete", "Todo deleted successfully")
 
                     val intent = Intent(requireActivity(), MainActivity::class.java)
                     startActivity(intent)
                 } else {
-                    Log.e("BoardDelete", "Error: ${response.code()}")
+                    Log.e("TodoDelete", "Error: ${response.code()}")
                     // Handle the error response, e.g., display an error message
                 }
                 requireActivity().finish() // Finish the fragment's parent activity after deletion
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e("BoardDelete", "Error: ${t.message}")
+                Log.e("TodoDelete", "Error: ${t.message}")
                 // Handle the failure, e.g., display an error message
                 requireActivity().finish() // Finish the fragment's parent activity after failure
             }
