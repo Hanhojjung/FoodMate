@@ -1,13 +1,12 @@
 package com.example.foodmate3.model
 
-import android.os.Message
-import java.lang.reflect.Member
+import java.io.Serializable
 
 data class MeetingDto(
-    val meeting_id: String,
+    val boardid: String,
     val meeting_title: String,
     val meeting_content: String,
-    var user: List<Member>,
+    var user: List<MemberDto>,
     val date: String,
-    val messages: List<Message>
-)
+    val messages: List<MessageDto>
+) : Serializable

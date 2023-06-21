@@ -23,10 +23,11 @@ import com.example.foodmate3.controller.BarController
 import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.controller.MeetingController
 import com.example.foodmate3.controller.SharedPreferencesUtil
-import com.example.foodmate3.databinding.ActivityMeetingBinding
 import com.example.foodmate3.model.BarDto
 import com.example.foodmate3.model.BoardDto
 import com.example.foodmate3.model.MeetingDto
+import com.example.foodmate3.model.MemberDto
+import com.example.foodmate3.model.MessageDto
 import com.example.foodmate3.network.RetrofitBuilder
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import okhttp3.ResponseBody
@@ -54,18 +55,15 @@ class BoardInsert : AppCompatActivity() {
 
     private lateinit var menu: Menu
 
-    private lateinit var meetingDto: MeetingDto
-    private lateinit var binding: ActivityMeetingBinding
-    private lateinit var meetingService: MeetingController
-    private lateinit var board : BoardDto
-
-
     //식당 리스트
     private lateinit var dropBarList: Spinner
     private lateinit var barService: BarController
     private lateinit var barListResponse: List<BarDto>
 
     private lateinit var boardService: BoardController
+
+    private lateinit var meetingService: MeetingController
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,16 +79,14 @@ class BoardInsert : AppCompatActivity() {
 
         //보드 레트로핏 연결
         boardService = RetrofitBuilder.BoardService()
-        // Retrofit을 사용하여 MeetingController 인터페이스의 구현체를 생성합니다.
+
         meetingService = RetrofitBuilder.MeetingService()
 
 
         getRestaurantList(barService)
 
         regButton.setOnClickListener {
-
             sendBoardData()
-//            sendMeetData()
         }
 
         regCancel.setOnClickListener {
@@ -109,7 +105,6 @@ class BoardInsert : AppCompatActivity() {
 
         btnCalendar.setOnClickListener {
             showDatePicker()
-
         }
         //메인 유틸 코드
         MainActivityUtil.initViews(this@BoardInsert)
@@ -189,7 +184,6 @@ class BoardInsert : AppCompatActivity() {
 
         datePickerDialog.show()
     }
-
     // 시간 선택
     private fun showTimePicker() {
         val timePickerDialog = TimePickerDialog(
@@ -212,9 +206,9 @@ class BoardInsert : AppCompatActivity() {
 
         timePickerDialog.show()
     }
-
+    //게시판에 입력된 데이터 -> 파이어베이스 -> insert
     private fun sendBoardData() {
-        val userNicname = SharedPreferencesUtil.getSessionNickname(this@BoardInsert) ?: "" // 작성자 정보
+        val userNickname = SharedPreferencesUtil.getSessionNickname(this@BoardInsert) ?: "" // 작성자 정보
         val title = findViewById<EditText>(R.id.boardtitle).text.toString()
         val content = findViewById<EditText>(R.id.boardcontent).text.toString()
         val barName = dropBarList.selectedItem.toString() // 선택된 식당 이름
@@ -225,10 +219,56 @@ class BoardInsert : AppCompatActivity() {
 
         boardService = RetrofitBuilder.BoardService()
 
-        val board = BoardDto("", userNicname, title, content, barName, barImg, memberCount, meetdate, regdate)
+        val board = BoardDto("", userNickname, title, content, barName, barImg, memberCount, meetdate, regdate)
 
         val call = boardService.insertBoard(board)
 
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    Log.d("lsy","response body 확인 : ${response.body().toString()}")
+
+                    val boardid = response.body()?.string() // 보드 아이디 받아오기
+                    boardid?.let {
+                        // 보드 아이디가 성공적으로 받아와졌을 때 sendMeetingData 함수 호출
+                        Log.d("lsy","boardid 확인 : ${boardid}")
+                        Log.d("lsy","boardid - it 확인2  : ${it}")
+
+                        sendMeetingData(it) // 수정된 부분: 받아온 보드 아이디 전달
+                    }
+                    Toast.makeText(applicationContext, "게시글이 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "응답 코드: ${response.code()}")
+                } else {
+                    // 전송 실패한 경우의 처리
+                    Toast.makeText(applicationContext, "게시글 등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "응답 코드: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                // 통신 실패 처리
+                Log.e(TAG, "통신 실패: ${t.message}")
+                Toast.makeText(applicationContext, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+    // 미팅 부분에 -> insert
+    private fun sendMeetingData(boardid: String) {
+        val meeting_title = findViewById<EditText>(R.id.boardtitle).text.toString()
+        val meeting_content = findViewById<EditText>(R.id.boardcontent).text.toString()
+        val user = SharedPreferencesUtil.getSessionNickname(this@BoardInsert) ?: "" // 작성자 정보
+        val date = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()) // 등록 날짜
+        val messages: List<MessageDto> = emptyList() // 빈 리스트로 초기화하거나 실제 메시지 데이터를 포함
+
+        meetingService = RetrofitBuilder.MeetingService()
+
+        val userList = mutableListOf<MemberDto>()
+        val member = MemberDto(nickname = user, pw = "", id = "") // 적절한 값으로 설정
+        userList.add(member)
+
+        val meeting = MeetingDto(boardid, meeting_title, meeting_content, userList, date, messages)
+
+        val call = meetingService.insertMeeting(boardid, meeting)
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
@@ -248,34 +288,4 @@ class BoardInsert : AppCompatActivity() {
             }
         })
     }
-//    private fun sendMeetData() {
-//        val meeting_title = findViewById<EditText>(R.id.boardtitle).text.toString()
-//        val meeting_content = findViewById<EditText>(R.id.boardcontent).text.toString()
-//        val user = SharedPreferencesUtil.getSessionNickname(this@BoardInsert) ?: "" // 작성자 정보
-//        val date = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()) // 등록 날짜
-//        val messages = null
-//
-//        meetingService = RetrofitBuilder.MeetingService()
-//
-//        val meeting = MeetingDto("", meeting_title, meeting_content, user, date, messages)
-//
-//        val call = meetingService.insertMeeting(meeting)
-//        call.enqueue(object : Callback<ResponseBody> {
-//            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-//                if (response.isSuccessful) {
-//                    Toast.makeText(applicationContext, "채팅방이 개설되었습니다.", Toast.LENGTH_SHORT).show()
-//                    Log.d(TAG, "응답 코드: ${response.code()}")
-//                } else {
-//                    // 전송 실패한 경우의 처리
-//                    Toast.makeText(applicationContext, "채팅방 개설 실패했습니다.", Toast.LENGTH_SHORT).show()
-//                    Log.d(TAG, "응답 코드: ${response.code()}")
-//                }
-//            }
-//            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-//                // 통신 실패 처리
-//                Log.e(TAG, "통신 실패: ${t.message}")
-//                Toast.makeText(applicationContext, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-//            }
-//        })
-//    }
 }

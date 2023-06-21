@@ -5,7 +5,7 @@
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MeetingActivity1">
+    tools:context=".MeetingActivity">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,10 +25,10 @@
             android:id="@+id/drawerTitle"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@color/purple_200"
+            android:background="@color/orange"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
-            android:text="TRIP Title"
+            android:text=""
             android:textColor="@color/purple_500"
             android:textSize="20sp"
             app:layout_constraintTop_toTopOf="parent" />

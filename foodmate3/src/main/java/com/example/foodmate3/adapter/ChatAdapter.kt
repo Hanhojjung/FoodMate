@@ -30,7 +30,7 @@ class ChatAdapter(private val context: Context, private val messages: MutableLis
         return messages.size
     }
 
-    fun submitList(newList: List<Message>) {
+    fun submitList(newList: List<MessageDto>) {
         messages.clear()
         messages.addAll(newList)
         notifyDataSetChanged()

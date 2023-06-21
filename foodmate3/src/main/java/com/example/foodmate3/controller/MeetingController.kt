@@ -18,35 +18,38 @@ interface MeetingController {
     ): Call<ResponseBody>
 
     @POST("/insertMeeting")
-    fun insertMeeting(@Body meeting: MeetingDto): Call<ResponseBody>
+    fun insertMeeting(
+        @Query("boardid") boardid: String,
+        @Body meeting: MeetingDto
+    ): Call<ResponseBody>
 
     @GET("/getOneMeeting")
-    fun getOneMeeting(@Query("meeting_id") meeting_id: String): Call<MeetingDto>
+    fun getOneMeeting(@Query("boardid") boardid: String): Call<MeetingDto>
 
     @GET("/deleteMeeting")
-    fun deleteMeeting(@Query("meeting_id") meeting_id: String): Call<MeetingDto>
+    fun deleteMeeting(@Query("boardid") boardid: String): Call<MeetingDto>
 
     @POST("/updateMeeting")
     fun updateMeeting(
-        @Query("meeting_id") meeting_id: String,
+        @Query("boardid") boardid: String,
         @Body meeting: MeetingDto
     ): Call<ResponseBody>
 
     @POST("/addMember")
     fun addMember(
-        @Query("meeting_id") meeting_id: String,
+        @Query("boardid") boardid: String,
         @Body member: MemberDto
     ): Call<ResponseBody>
 
     @POST("/removeMember")
     fun removeMember(
-        @Query("meeting_id") meeting_id: String,
+        @Query("boardid") boardid: String,
         @Body member: MemberDto
     ): Call<ResponseBody>
 
     @POST("/addMessage")
     fun addMessage(
-        @Query("meeting_id") meeting_id: String,
+        @Query("boardid") boardid: String,
         @Body message: MessageDto
     ): Call<ResponseBody>
 
