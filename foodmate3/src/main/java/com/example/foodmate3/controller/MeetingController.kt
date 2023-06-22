@@ -15,7 +15,7 @@ interface MeetingController {
     @GET("/getMeetingByNickname")
     fun getMeetingByNickname(
         @Query("nickname") nickname: String
-    ): Call<ResponseBody>
+    ): Call<List<MeetingDto>>
 
     @POST("/insertMeeting")
     fun insertMeeting(

@@ -1,6 +1,9 @@
 package com.example.foodmate3
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -8,9 +11,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.foodmate3.Util.MainActivityUtil
 import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.controller.SharedPreferencesUtil
@@ -29,6 +33,7 @@ class BoardDetail : AppCompatActivity() {
     private val TAG: String = "BoardDetail"
     private lateinit var binding: ActivityBoardDetailBinding
     private lateinit var boardService: BoardController
+    private lateinit var context: Context
     private lateinit var menu: Menu
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,11 +46,14 @@ class BoardDetail : AppCompatActivity() {
         val regUpdate: Button = findViewById(R.id.reg_update)
         val regDelete: Button = findViewById(R.id.reg_delete)
 
+        context = this@BoardDetail
+
         regList.setOnClickListener {
             // 목록 버튼으로 클릭 시 MainActivity로 이동
             val intent = Intent(this@BoardDetail, MainActivity::class.java)
             startActivity(intent)
         }
+
 
         regUpdate.setOnClickListener {
             val intent = Intent(this@BoardDetail, BoardUpdate::class.java)
@@ -100,17 +108,30 @@ class BoardDetail : AppCompatActivity() {
         boardDetailCall.enqueue(object : Callback<BoardDto> {
             override fun onResponse(call: Call<BoardDto>, response: Response<BoardDto>) {
                 if (response.isSuccessful) {
-                    boardDto = response.body()!!
-                    boardDto?.let {
+                    val boardDetailResponse = response.body()
+                    boardDetailResponse?.let {
                         // 상세 정보를 처리하는 로직을 작성하세요.
                         // 예: 받은 데이터를 사용하여 UI에 표시
-                        binding.BoardTitle.text = it.title
                         binding.UserNickname.text = it.userNicname
                         binding.boardcontent.text = it.content
                         binding.BarName.text = it.barName
                         binding.UserCount.text = it.memberCount
                         binding.MeetDate.text = it.meetdate.toString()
                         binding.RegDate.text = it.regdate.toString()
+
+                        val urlImg = it.barImg
+
+                        Glide.with(context)
+                            .asBitmap()
+                            .load(urlImg)
+                            .into(object : CustomTarget<Bitmap>(200, 200) {
+                                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                    binding.BoardImg.setImageBitmap(resource)
+                                }
+                                override fun onLoadCleared(placeholder: Drawable?) {
+                                    // 이미지 로딩이 취소되었을 때의 동작을 정의하려면 여기에 코드를 추가하세요.
+                                }
+                            })
                     }
                 } else {
                     Log.e("BoardDetail", "Error: ${response.code()}")

@@ -156,7 +156,7 @@ class MeetingActivity : AppCompatActivity() {
         val time = System.currentTimeMillis()
         val dateFormat = SimpleDateFormat("HH:mm", Locale.KOREA)//한국 날짜 시간 변경
         val curTime = dateFormat.format(Date(time))
-        val nickname = SharedPreferencesUtil.getSessionNickname(this@MeetingActivity) ?: ""
+        val nickname = SharedPreferencesUtil.getSessionNickname(this@MeetingActivity,) ?: ""
         val message = MessageDto(nickname, messageContent, curTime)
         Log.d("lsy","message의 curTime 내용 : " + curTime)
         val call = meetingService.addMessage(meetingId, message)

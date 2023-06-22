@@ -1,13 +1,13 @@
 package com.example.foodmate3.adapter
 
 import android.content.Context
-import android.os.Message
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodmate3.R
 import com.example.foodmate3.databinding.ItemMessageBinding
+import com.example.foodmate3.model.MeetingDto
 import com.example.foodmate3.model.MessageDto
 
 class ChatViewHolder(val binding: ItemMessageBinding) : RecyclerView.ViewHolder(binding.root)
@@ -39,11 +39,15 @@ class ChatAdapter(private val context: Context, private val messages: MutableLis
     inner class ChatViewHolder(private val binding: ItemMessageBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: MessageDto) {
             binding.chatMsgLayoutBg.findViewById<TextView>(R.id.chatMsg).text = message.content
+            binding.chatMsgLayoutBg.findViewById<TextView>(R.id.chatMsgUsername).text = message.nickname
+            binding.chatMsgTime.text = message.time
+        }
+
+        fun bind(message: MeetingDto) {
+
         }
     }
 }
 
-private fun <E> MutableList<E>.addAll(elements: List<Message>) {
 
-}
 

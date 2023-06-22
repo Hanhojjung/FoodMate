@@ -1,6 +1,9 @@
 package com.example.foodmate3
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +14,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.foodmate3.Util.MainActivityUtil
 import com.example.foodmate3.controller.BoardController
 import com.example.foodmate3.controller.MeetingController
@@ -40,6 +46,7 @@ class BoardDetail2 : AppCompatActivity() {
     private lateinit var boardId:String
     private lateinit var nickname:String
     private lateinit var member:MemberDto
+    private lateinit var context: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +66,7 @@ class BoardDetail2 : AppCompatActivity() {
         val heart : Button = findViewById(R.id.button_favorite)
         val chattingroom : Button = findViewById(R.id.chattingroom)
 
+        context = this@BoardDetail2
 
         regList.setOnClickListener {
             // 목록 버튼으로 클릭 시 MainActivity로 이동
@@ -146,13 +154,26 @@ class BoardDetail2 : AppCompatActivity() {
                     boardDetailResponse?.let {
                         // 상세 정보를 처리하는 로직을 작성하세요.
                         // 예: 받은 데이터를 사용하여 UI에 표시
-                        binding.BoardTitle.text = it.title
                         binding.UserNickname.text = it.userNicname
                         binding.boardcontent.text = it.content
                         binding.BarName.text = it.barName
                         binding.UserCount.text = it.memberCount
                         binding.MeetDate.text = it.meetdate.toString()
                         binding.RegDate.text = it.regdate.toString()
+
+                        val urlImg = it.barImg
+
+                        Glide.with(context)
+                            .asBitmap()
+                            .load(urlImg)
+                            .into(object : CustomTarget<Bitmap>(200, 200) {
+                                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                    binding.BoardImg.setImageBitmap(resource)
+                                }
+                                override fun onLoadCleared(placeholder: Drawable?) {
+                                    // 이미지 로딩이 취소되었을 때의 동작을 정의하려면 여기에 코드를 추가하세요.
+                                }
+                            })
                     }
                 } else {
                     Log.e("BoardDetail", "Error: ${response.code()}")
@@ -164,40 +185,4 @@ class BoardDetail2 : AppCompatActivity() {
             }
         })
     }
-
-
-//        val meeting_title = findViewById<EditText>(R.id.boardtitle).text.toString()
-//        val meeting_content = findViewById<EditText>(R.id.boardcontent).text.toString()
-//        val user = SharedPreferencesUtil.getSessionNickname(this@BoardDetail2) ?: "" // 작성자 정보
-//        val date = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()) // 등록 날짜
-//        val messages: List<MessageDto> = emptyList() // 빈 리스트로 초기화하거나 실제 메시지 데이터를 포함
-//
-//        meetingService = RetrofitBuilder.MeetingService()
-//
-//        val userList = mutableListOf<MemberDto>()
-//        val member = MemberDto(nickname = user, pw = "", id = "") // 적절한 값으로 설정
-//        userList.add(member)
-//
-//        val meeting = MeetingDto(boardid, meeting_title, meeting_content, userList, date, messages)
-//
-//        val call = meetingService.insertMeeting(boardid, meeting)
-//        call.enqueue(object : Callback<ResponseBody> {
-//            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-//                if (response.isSuccessful) {
-//                    Toast.makeText(applicationContext, "게시글이 등록되었습니다.", Toast.LENGTH_SHORT).show()
-//                    Log.d(TAG, "응답 코드: ${response.code()}")
-//                } else {
-//                    // 전송 실패한 경우의 처리
-//                    Toast.makeText(applicationContext, "게시글 등록에 실패했습니다.", Toast.LENGTH_SHORT).show()
-//                    Log.d(TAG, "응답 코드: ${response.code()}")
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-//                // 통신 실패 처리
-//                Log.e(TAG, "통신 실패: ${t.message}")
-//                Toast.makeText(applicationContext, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-//            }
-//        })
-
 }
