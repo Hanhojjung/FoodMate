@@ -132,6 +132,9 @@ class BoardDetail : AppCompatActivity() {
                                     // 이미지 로딩이 취소되었을 때의 동작을 정의하려면 여기에 코드를 추가하세요.
                                 }
                             })
+
+                        // boardDto를 초기화
+                        boardDto = it
                     }
                 } else {
                     Log.e("BoardDetail", "Error: ${response.code()}")
@@ -142,6 +145,6 @@ class BoardDetail : AppCompatActivity() {
                 Log.e("BoardDetail", "Error: ${t.message}")
             }
         })
-
     }
+
 }

@@ -265,7 +265,9 @@ class BoardInsert : AppCompatActivity() {
         val userList = mutableListOf<MemberDto>()
         val member = MemberDto(nickname = user, pw = "", id = "") // 적절한 값으로 설정
         userList.add(member)
-
+        val intent = Intent(this@BoardInsert, MainActivity::class.java)
+        startActivity(intent)
+        finish()
         val meeting = MeetingDto(boardid, meeting_title, meeting_content, userList, date, messages)
 
         val call = meetingService.insertMeeting(boardid, meeting)
